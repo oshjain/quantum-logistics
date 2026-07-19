@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "build": "tsc -b && vite build",
     "deploy:backend": "convex deploy",
+    "deploy": "node scripts/deploy.js",
     "test": "vitest run",
     "lint": "eslint .",
     "prettier-fix": "prettier --write .",
