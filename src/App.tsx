@@ -22,7 +22,7 @@ import QuantumShipmentPage from "./pages/quantum-shipment/page.tsx";
 export default function App() {
   return (
     <DefaultProviders>
-      <BrowserRouter>
+      <BrowserRouter basename="/quantum-logistics">
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/bb84" element={<BB84Page />} />

@@ -26,6 +26,7 @@ export default defineConfig({
       "react/jsx-dev-runtime",
     ],
   },
+  base: "/quantum-logistics/",
   build: {
     chunkSizeWarningLimit: 1000,
   },
