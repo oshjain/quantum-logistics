@@ -45,9 +45,9 @@ const CATEGORIES: Category[] = [
       },
       {
         path: "/empty-container",
-        title: "Empty Container Dash",
+        title: "Empty Container Repositioning",
         emoji: "📦",
-        desc: "Reposition empty boxes from Shanghai to Rotterdam and LA at minimum fuel cost.",
+        desc: "Route empty containers from surplus ports to deficit ports across a global network at minimum cost.",
         diff: "⭐ Easy",
         algo: "Integer Linear Programming",
         algoWhy: "Like a budget planner — it treats each container move as a cost and tries every combination of moves to find the cheapest total bill. Shipping companies use this exact approach to save millions each year.",
@@ -72,7 +72,7 @@ const CATEGORIES: Category[] = [
         path: "/trip-chain",
         title: "Trucker's Trip Chain",
         emoji: "🚛",
-        desc: "Chain 4 loads into the perfect daily route — respect every time window, minimise empty miles.",
+        desc: "Chain dynamic loads into the perfect daily route — respect every time window, minimise empty miles.",
         diff: "⭐⭐ Medium",
         algo: "Permutation + Time-Window Filtering",
         algoWhy: "Like arranging stops on a road trip — it tries all 24 possible orderings of 4 loads and immediately discards any that miss a delivery window. Only valid, on-time routes make the final ranking.",
@@ -131,10 +131,10 @@ const CATEGORIES: Category[] = [
         path: "/flight-capacity",
         title: "Flight Capacity Auction",
         emoji: "💺",
-        desc: "Accept the right booking mix across 3 flights to maximise revenue without exceeding capacity.",
+        desc: "Accept the right booking mix across multiple flights — balance revenue against fuel costs and capacity limits.",
         diff: "⭐ Easy",
-        algo: "0/1 Knapsack",
-        algoWhy: "Imagine a thief with a bag that has a weight limit — they want to steal the most valuable items without overloading the bag. Airlines face the exact same maths: accept or reject each booking to maximise revenue without exceeding the plane's weight limit.",
+        algo: "0/1 Knapsack + Greedy Heuristic",
+        algoWhy: "Like a cargo airline's revenue manager — it evaluates every combination of bookings (or uses profit-density heuristics for larger problems) to maximise profit while respecting each plane's weight limit. Real airlines solve this thousands of times daily.",
       },
     ],
   },
@@ -199,9 +199,9 @@ const USE_CASES = [
     border: "#22c55e30",
     items: [
       { title: "Route optimisation", body: "Finding the single best delivery route among billions of options — today's computers give up and guess. A quantum computer checks them all at once." },
-      { title: "Drug discovery", body: "Simulating how a new medicine molecule folds and bonds. Classical computers need years. Quantum does it in hours." },
-      { title: "Financial risk", body: "Banks must price complex trades in milliseconds. Quantum can run millions of 'what if' scenarios simultaneously." },
-      { title: "Breaking & making encryption", body: "The same quantum tricks that crack old passwords can build unbreakable new ones — like the BB84 protocol you can try above." },
+      { title: "Container stowage & yard planning", body: "A 24,000 TEU mega-ship making 6 port calls has more possible stacking configurations than atoms in the observable universe. One bad stack costs $600 in extra crane moves; 50 bad stacks per voyage wastes $30K. Quantum constraint solvers find a restow-free plan in seconds.", source: "Drewry Maritime Research · Port of Rotterdam Digital Twin" },
+      { title: "Intermodal freight routing", body: "Combining truck, rail, barge, and ocean across 1,000+ city pairs — while respecting delivery windows, schedules, and customs — creates a search space exceeding 10¹⁰⁰⁰. DB Schenker and DHL are piloting quantum solvers today for this exact problem.", source: "DB Schenker · DHL Innovation Center, 2024" },
+      { title: "Empty container repositioning", body: "The global fleet of 40 million TEU containers is constantly in the wrong place. Repositioning them optimally is an integer-linear-programming problem with millions of variables — exactly the kind of optimisation where quantum annealers deliver order-of-magnitude speedups over classical solvers.", source: "Drewry Container Census 2024" },
     ],
   },
   {
@@ -360,18 +360,21 @@ export default function Index() {
                   icon: "🗺️",
                   title: "The sat-nav problem",
                   body: "Your sat-nav finds the best route through a city in seconds. But a logistics company with 500 trucks and 10,000 stops? Classical computers would take longer than the age of the universe to check every combination. Quantum computers solve this in real time.",
+                  source: "Vehicle Routing Problem: NP-hard; n! possible routes for n stops",
                   color: "#f59e0b",
                 },
                 {
                   icon: "💊",
                   title: "The medicine problem",
                   body: "Designing a new cancer drug means testing how billions of molecules interact. Classical computers simulate one interaction per step. A quantum computer simulates all of them at once — cutting drug development from 12 years to potentially 12 months.",
+                  source: "Tufts Center for Drug Development · Nature Reviews Drug Discovery, 2023",
                   color: "#a855f7",
                 },
                 {
                   icon: "🔐",
                   title: "The password problem",
                   body: "Your bank password is safe because cracking it would take a classical computer millions of years. A quantum computer could do it in minutes. That's why governments are racing to build quantum-proof encryption right now — before adversaries get there first.",
+                  source: "NIST Post-Quantum Cryptography · Shor's Algorithm, 1994",
                   color: "#f87171",
                 },
               ].map((item) => (
@@ -383,6 +386,9 @@ export default function Index() {
                   <div className="text-3xl mb-3">{item.icon}</div>
                   <h3 className="font-semibold mb-2" style={{ color: item.color }}>{item.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{item.body}</p>
+                  {item.source && (
+                    <p className="text-[9px] text-muted-foreground/50 font-mono mt-2 italic">Sources: {item.source}</p>
+                  )}
                 </div>
               ))}
             </div>
@@ -410,6 +416,9 @@ export default function Index() {
                         <div>
                           <p className="text-sm font-medium">{item.title}</p>
                           <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{item.body}</p>
+                          {item.source && (
+                            <p className="text-[9px] text-muted-foreground/50 font-mono mt-1 italic">Sources: {item.source}</p>
+                          )}
                         </div>
                       </div>
                     ))}
@@ -432,26 +441,32 @@ export default function Index() {
                   {
                     icon: "🌍",
                     title: "Global supply chains are broken",
-                    body: "The 2021 Suez Canal blockage cost $9.6 billion per day. The root cause? We can't optimise 100,000+ variables in real time. Quantum can. A single quantum-optimised fleet schedule could save a major carrier $200M+ per year in fuel and delays.",
+                    body: "March 2021: The Ever Given blocks the Suez Canal for 6 days — $9.6 billion in trade halted daily, 369 vessels trapped. Rerouting thousands of ships around Africa means recalculating fuel, ETAs, port slots, and cargo connections simultaneously — a problem with more possible solutions than atoms in the universe. Classical computers take days to produce mediocre answers. Quantum solves it in real time.\n\n2020–2022: COVID empties Asian ports of containers while they pile up in North America and Europe. Shanghai–LA spot rates surge from $1,500 to over $20,000 per box. The industry loses an estimated $150 billion in disruption costs — all rooted in the inability to rebalance 40 million containers globally. This is integer linear programming at planetary scale. A quantum solver running daily could reposition the fleet continuously, preventing the next crisis before it starts.",
+                    source: "Lloyd's List · Freightos Baltic Index · Sea-Intelligence",
                     color: "#f59e0b",
                   },
                   {
                     icon: "🏁",
                     title: "The race has already started",
                     body: "IBM, Google, China, and the EU have each committed $1B+ to quantum programs. UPS, FedEx, Volkswagen, and Airbus are all running active quantum pilots today. The companies that learn this technology now will hold a structural advantage in the 2030s.",
+                    source: "EU Quantum Flagship · Volkswagen / D-Wave · UPS / IBM Quantum Network",
                     color: "oklch(0.72 0.22 200)",
                   },
                   {
                     icon: "⏳",
                     title: "The window to prepare is 5 years",
                     body: "Quantum computers that outperform classical ones on real logistics problems are 3–7 years away. That sounds like a long time — but migrating a global carrier's systems takes 4–6 years. Companies that start learning in 2025 will be ready. Those that wait until 2030 will be scrambling.",
+                    source: "IBM Quantum Roadmap 2025 · Gartner Supply Chain Survey 2024",
                     color: "#22c55e",
                   },
                 ].map((item) => (
                   <div key={item.title}>
                     <div className="text-3xl mb-3">{item.icon}</div>
                     <h3 className="font-semibold mb-2 text-sm" style={{ color: item.color }}>{item.title}</h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed">{item.body}</p>
+                    <p className="text-xs text-muted-foreground leading-relaxed whitespace-pre-line">{item.body}</p>
+                    {item.source && (
+                      <p className="text-[9px] text-muted-foreground/50 font-mono mt-2.5 italic">Sources: {item.source}</p>
+                    )}
                   </div>
                 ))}
               </div>
@@ -614,7 +629,7 @@ export default function Index() {
                     <div className="h-px flex-1 bg-border/50 ml-2" />
                   </div>
 
-                  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {cat.sims.map((sim, si) => (
                       <motion.div
                         key={sim.path}
@@ -624,49 +639,76 @@ export default function Index() {
                       >
                         <Link
                           to={sim.path}
-                          className="flex flex-col rounded-xl border border-border/50 bg-card p-4 group hover:border-primary/30 transition-all duration-200 cursor-pointer h-full"
-                          style={{ boxShadow: `0 0 24px ${cat.color}0a` }}
+                          className="block h-full cursor-pointer group"
                         >
-                          {/* Header */}
-                          <div className="flex items-start justify-between mb-2">
-                            <span className="text-2xl">{sim.emoji}</span>
-                            <span className="text-[10px] text-muted-foreground font-mono">{sim.diff}</span>
-                          </div>
-
-                          {/* Title + puzzle description */}
-                          <h3 className="font-semibold text-sm mb-1" style={{ color: cat.color }}>
-                            {sim.title}
-                          </h3>
-                          <p className="text-xs text-muted-foreground leading-relaxed mb-3">{sim.desc}</p>
-
-                          {/* Algorithm box */}
-                          <div
-                            className="rounded-lg px-2.5 py-2 border flex-1 flex flex-col gap-1"
+                          <motion.div
+                            whileHover={{ scale: 1.03, y: -3 }}
+                            whileTap={{ scale: 0.98 }}
+                            className="relative rounded-xl border border-border/50 overflow-hidden p-5 h-full flex flex-col bg-card transition-shadow duration-300"
                             style={{
-                              background: `${cat.color}0d`,
-                              borderColor: `${cat.color}28`,
+                              borderColor: `${cat.color}40`,
+                              boxShadow: `0 0 40px ${cat.color}10`,
                             }}
                           >
-                            <span
-                              className="text-[9px] font-mono uppercase tracking-wider"
-                              style={{ color: `${cat.color}99` }}
-                            >
-                              Algorithm used
-                            </span>
-                            <p className="text-[11px] font-bold leading-tight" style={{ color: cat.color }}>
-                              {sim.algo}
-                            </p>
-                            <p className="text-[10px] text-muted-foreground leading-relaxed mt-0.5">
-                              {sim.algoWhy}
-                            </p>
-                          </div>
+                            {/* Subtle glow overlay */}
+                            <div
+                              className="absolute inset-0 opacity-[0.05] pointer-events-none transition-opacity duration-300 group-hover:opacity-[0.14]"
+                              style={{
+                                background: `radial-gradient(ellipse at 80% 0%, ${cat.color}, transparent 60%)`,
+                              }}
+                            />
 
-                          <div
-                            className="mt-3 text-xs font-medium group-hover:translate-x-1 transition-transform shrink-0"
-                            style={{ color: cat.color }}
-                          >
-                            Play →
-                          </div>
+                            <div className="relative z-10 flex flex-col h-full">
+                              {/* Header */}
+                              <div className="flex items-start justify-between mb-3">
+                                <span className="text-3xl">{sim.emoji}</span>
+                                <span className="text-xs text-muted-foreground font-mono">{sim.diff}</span>
+                              </div>
+
+                              {/* Title + puzzle description */}
+                              <h3
+                                className="font-bold text-lg mb-2 group-hover:brightness-110 transition-all duration-200"
+                                style={{ color: cat.color }}
+                              >
+                                {sim.title}
+                              </h3>
+                              <p className="text-sm text-muted-foreground leading-relaxed mb-4">
+                                {sim.desc}
+                              </p>
+
+                              {/* Algorithm box */}
+                              <div
+                                className="rounded-lg px-3 py-3 border flex-1 flex flex-col gap-1.5 transition-colors duration-200"
+                                style={{
+                                  background: `${cat.color}0d`,
+                                  borderColor: `${cat.color}30`,
+                                }}
+                              >
+                                <span
+                                  className="text-[10px] font-mono uppercase tracking-wider"
+                                  style={{ color: `${cat.color}99` }}
+                                >
+                                  Algorithm used
+                                </span>
+                                <p
+                                  className="text-sm font-bold leading-tight"
+                                  style={{ color: cat.color }}
+                                >
+                                  {sim.algo}
+                                </p>
+                                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">
+                                  {sim.algoWhy}
+                                </p>
+                              </div>
+
+                              <div
+                                className="mt-4 text-sm font-semibold group-hover:translate-x-1.5 transition-transform shrink-0"
+                                style={{ color: cat.color }}
+                              >
+                                Play →
+                              </div>
+                            </div>
+                          </motion.div>
                         </Link>
                       </motion.div>
                     ))}
