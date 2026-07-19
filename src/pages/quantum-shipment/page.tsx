@@ -117,7 +117,7 @@ export default function QuantumShipmentPage() {
     setGameState(s);
     setPendingResult(null);
     setRestartId((id) => id + 1);
-    setHasStarted(false);
+    setHasStarted(true);
   };
 
   const { currentStage, stageResults, seeds, gameOver } = gameState;
@@ -206,7 +206,19 @@ export default function QuantumShipmentPage() {
           <div className="flex items-center gap-1">
             {!showIntro && (
               <>
-                <Button variant="ghost" size="sm" onClick={() => setHasStarted(false)} className="gap-1 text-xs">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setHasStarted(false);
+                    setGameState((prev) => {
+                      const newResults = { ...prev.stageResults };
+                      delete newResults[1];
+                      return { ...prev, currentStage: 1, stageResults: newResults };
+                    });
+                  }}
+                  className="gap-1 text-xs"
+                >
                   <BookOpen className="w-3 h-3" /> Intro
                 </Button>
                 <Button variant="ghost" size="sm" onClick={handleRestart} className="gap-1 text-xs">
