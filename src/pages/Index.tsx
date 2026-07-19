@@ -248,7 +248,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-3 mb-8">
       <div className="h-px flex-1 bg-border/40" />
-      <span className="text-[11px] font-mono text-muted-foreground uppercase tracking-widest px-2">{children}</span>
+      <span className="text-xs font-mono text-muted-foreground uppercase tracking-widest px-2">{children}</span>
       <div className="h-px flex-1 bg-border/40" />
     </div>
   );
@@ -384,8 +384,8 @@ export default function Index() {
                   style={{ background: "oklch(0.1 0.02 260 / 0.5)" }}
                 >
                   <div className="text-3xl mb-3">{item.icon}</div>
-                  <h3 className="font-semibold mb-2" style={{ color: item.color }}>{item.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{item.body}</p>
+                  <h3 className="font-semibold text-base mb-2" style={{ color: item.color }}>{item.title}</h3>
+                  <p className="text-base text-muted-foreground leading-relaxed">{item.body}</p>
                   {item.source && (
                     <p className="text-[9px] text-muted-foreground/50 font-mono mt-2 italic">Sources: {item.source}</p>
                   )}
@@ -407,15 +407,15 @@ export default function Index() {
                 >
                   <div className="flex items-center gap-2 mb-4">
                     <span className="text-xl">{uc.icon}</span>
-                    <span className="font-bold text-sm" style={{ color: uc.color }}>{uc.label}</span>
+                    <span className="font-bold text-base" style={{ color: uc.color }}>{uc.label}</span>
                   </div>
                   <div className="space-y-3">
                     {uc.items.map((item) => (
                       <div key={item.title} className="flex gap-3">
                         <div className="w-1 rounded-full shrink-0 mt-1" style={{ background: uc.color, minHeight: "100%" }} />
                         <div>
-                          <p className="text-sm font-medium">{item.title}</p>
-                          <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{item.body}</p>
+                          <p className="text-base font-semibold">{item.title}</p>
+                          <p className="text-sm text-muted-foreground leading-relaxed mt-0.5">{item.body}</p>
                           {item.source && (
                             <p className="text-[9px] text-muted-foreground/50 font-mono mt-1 italic">Sources: {item.source}</p>
                           )}
@@ -462,8 +462,8 @@ export default function Index() {
                 ].map((item) => (
                   <div key={item.title}>
                     <div className="text-3xl mb-3">{item.icon}</div>
-                    <h3 className="font-semibold mb-2 text-sm" style={{ color: item.color }}>{item.title}</h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed whitespace-pre-line">{item.body}</p>
+                    <h3 className="font-semibold mb-2 text-base" style={{ color: item.color }}>{item.title}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">{item.body}</p>
                     {item.source && (
                       <p className="text-[9px] text-muted-foreground/50 font-mono mt-2.5 italic">Sources: {item.source}</p>
                     )}
@@ -495,7 +495,7 @@ export default function Index() {
                     {stat.value}
                   </p>
                   <p className="text-sm font-medium mb-2">{stat.label}</p>
-                  <p className="text-[10px] font-mono text-muted-foreground">{stat.source}</p>
+                  <p className="text-xs font-mono text-muted-foreground">{stat.source}</p>
                 </motion.div>
               ))}
             </div>
@@ -503,11 +503,11 @@ export default function Index() {
             {/* Adoption by sector */}
             <div className="grid md:grid-cols-2 gap-5 mb-8">
               <div className="rounded-2xl border border-border/40 p-6" style={{ background: "oklch(0.1 0.02 260 / 0.5)" }}>
-                <p className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-5">Quantum Readiness by Sector (2025)</p>
+                <p className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-5">Quantum Readiness by Sector (2025)</p>
                 <div className="space-y-3">
                   {ADOPTION_SECTORS.map((s) => (
                     <div key={s.sector}>
-                      <div className="flex justify-between text-xs mb-1">
+                      <div className="flex justify-between text-sm mb-1">
                         <span className="text-muted-foreground">{s.sector}</span>
                         <span className="font-mono" style={{ color: s.color }}>{s.readiness}%</span>
                       </div>
@@ -523,11 +523,11 @@ export default function Index() {
                     </div>
                   ))}
                 </div>
-                <p className="text-[10px] text-muted-foreground mt-4">Source: Deloitte Quantum Readiness Survey, 2024. Based on C-suite pilot commitments and budget allocation.</p>
+                <p className="text-xs text-muted-foreground mt-4">Source: Deloitte Quantum Readiness Survey, 2024. Based on C-suite pilot commitments and budget allocation.</p>
               </div>
 
               <div className="rounded-2xl border border-border/40 p-6" style={{ background: "oklch(0.1 0.02 260 / 0.5)" }}>
-                <p className="text-xs font-mono text-muted-foreground uppercase tracking-wider mb-5">GTM Timeline for Quantum Logistics Solutions</p>
+                <p className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-5">GTM Timeline for Quantum Logistics Solutions</p>
                 <div className="space-y-4">
                   {TIMELINE.map((t, i) => (
                     <div key={t.year} className="flex gap-4">
@@ -559,7 +559,7 @@ export default function Index() {
                             {t.label}
                           </span>
                         </div>
-                        <p className="text-xs text-muted-foreground leading-relaxed">{t.desc}</p>
+                        <p className="text-sm text-muted-foreground leading-relaxed">{t.desc}</p>
                       </div>
                     </div>
                   ))}
@@ -572,7 +572,7 @@ export default function Index() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.35 }}>
             <SectionLabel>Try the Simulations</SectionLabel>
 
-            <p className="text-center text-muted-foreground text-sm mb-8 max-w-xl mx-auto">
+            <p className="text-center text-muted-foreground text-base mb-8 max-w-xl mx-auto">
               Every puzzle below uses a <strong className="text-foreground">real algorithm</strong> — the same logic quantum computers will one day run at superhuman scale. Play manually, then hit the <strong className="text-foreground">Smart Helper</strong> to see the optimal solution explained in plain language.
             </p>
 
@@ -685,7 +685,7 @@ export default function Index() {
                                 }}
                               >
                                 <span
-                                  className="text-[10px] font-mono uppercase tracking-wider"
+                                  className="text-xs font-mono uppercase tracking-wider"
                                   style={{ color: `${cat.color}99` }}
                                 >
                                   Algorithm used
@@ -696,7 +696,7 @@ export default function Index() {
                                 >
                                   {sim.algo}
                                 </p>
-                                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">
+                                <p className="text-sm text-muted-foreground leading-relaxed mt-0.5">
                                   {sim.algoWhy}
                                 </p>
                               </div>
