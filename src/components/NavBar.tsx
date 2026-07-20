@@ -28,7 +28,7 @@ export default function NavBar() {
     { group: "🚢 Shipping Lines", links: [
       { path: "/container-stack", label: "Container Stack Shuffle" },
       { path: "/vessel-stowage", label: "Vessel Stowage Tetris" },
-      { path: "/empty-container", label: "Empty Container Repositioning" },
+      { path: "/empty-container", label: "Empty Container Dash" },
       { path: "/berth-race", label: "Berth Race" },
       { path: "/quantum-shipment", label: "Quantum Shipment Lifecycle" },
     ]},
@@ -61,7 +61,7 @@ export default function NavBar() {
           <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center">
             <span className="text-primary-foreground text-xs font-bold font-mono">Q</span>
           </div>
-          <span className="font-semibold text-sm tracking-tight">QuantumSim</span>
+          <span className="font-semibold text-sm tracking-tight">WNS Quantum Lab</span>
         </Link>
 
         {navItems.map((item) => (
@@ -94,7 +94,7 @@ export default function NavBar() {
 
           {open && (
             <div
-              className="absolute top-full right-0 mt-1 w-64 sm:w-72 max-w-[calc(100vw-2rem)] rounded-xl border border-border bg-card shadow-2xl z-50 p-3 space-y-3 max-h-[calc(100vh-5rem)] overflow-y-auto"
+              className="absolute top-full left-0 mt-1 w-72 max-w-[calc(100vw-2rem)] rounded-xl border border-border bg-card shadow-2xl z-50 p-3 space-y-3 max-h-[calc(100vh-5rem)] overflow-y-auto"
             >
               {ALL_LINKS.map((group) => (
                 <div key={group.group}>

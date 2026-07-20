@@ -278,7 +278,7 @@ export default function Index() {
         <div className="relative z-10 max-w-4xl mx-auto text-center">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <div className="inline-flex items-center gap-2 border border-primary/30 bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-medium mb-6 font-mono">
-              16 interactive simulations · Real algorithms · No maths jargon
+              WNS · Part of Capgemini &nbsp;|&nbsp; 16 interactive logistics simulations
             </div>
             <h1 className="text-5xl sm:text-7xl font-bold tracking-tight text-balance mb-5 leading-[1.05]">
               The Future of{" "}
@@ -573,7 +573,7 @@ export default function Index() {
             <SectionLabel>Try the Simulations</SectionLabel>
 
             <p className="text-center text-muted-foreground text-base mb-8 max-w-xl mx-auto">
-              Every puzzle below uses a <strong className="text-foreground">real algorithm</strong> — the same logic quantum computers will one day run at superhuman scale. Play manually, then hit the <strong className="text-foreground">Smart Helper</strong> to see the optimal solution explained in plain language.
+              Every puzzle below uses an actual algorithm — the same logic quantum computers will one day run at scale. Try solving manually, then use the <strong className="text-foreground">Smart Helper</strong> to see the optimal solution.
             </p>
 
             {/* Featured: Quantum Shipment Lifecycle */}
@@ -720,6 +720,215 @@ export default function Index() {
         </div>
       </section>
 
+      {/* ─── BUSINESS STRATEGY ──────────────────────────────────── */}
+      <section className="px-4 pb-20">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            <SectionLabel>Why This Matters for Our Business</SectionLabel>
+
+            {/* Intro */}
+            <div className="rounded-2xl border border-primary/30 p-8 mb-8 relative overflow-hidden"
+              style={{ background: "linear-gradient(135deg, oklch(0.11 0.05 200), oklch(0.09 0.03 250))" }}>
+              <div className="absolute inset-0 opacity-8 pointer-events-none"
+                style={{ background: "radial-gradient(ellipse at 70% 30%, oklch(0.72 0.22 200 / 0.3), transparent 60%)" }} />
+              <div className="relative z-10">
+                <p className="text-xs font-mono text-primary/60 uppercase tracking-widest mb-3">The Big Picture</p>
+                <h2 className="text-3xl font-bold mb-4 text-white leading-tight">
+                  Quantum computing is not a distant science experiment. It is the next major platform shift in enterprise technology — and logistics will be one of the first industries transformed.
+                </h2>
+                <p className="text-white/70 text-base leading-relaxed max-w-3xl">
+                  Every simulation on this page runs on a classical computer today. But each algorithm — vehicle routing, container stacking, intermodal scheduling — is exactly the kind of problem where quantum computers will deliver orders-of-magnitude improvements. The question is not <em>if</em> this shift happens, but <em>who is ready when it does</em>.
+                </p>
+              </div>
+            </div>
+
+            {/* Three strategic pillars */}
+            <div className="grid md:grid-cols-3 gap-6 mb-10">
+              {/* Pillar 1: Capgemini + WNS */}
+              <div className="rounded-2xl border border-purple-500/25 p-6"
+                style={{ background: "oklch(0.1 0.03 280 / 0.6)" }}>
+                <div className="text-3xl mb-3">🏢</div>
+                <h3 className="font-bold text-lg mb-3 text-purple-300">Where We Stand</h3>
+                <p className="text-white/65 text-sm leading-relaxed mb-4">
+                  We are now part of Capgemini, which operates a dedicated Quantum Lab with over 40 specialists across five countries. The Q-Lab holds partnerships with IBM Quantum, Pasqal (neutral-atom quantum computing), and participates in the EU EQUALITY consortium alongside Airbus and Fraunhofer.
+                </p>
+                <p className="text-white/65 text-sm leading-relaxed">
+                  Combined with WNS's deep logistics domain expertise — built over decades of running real-world supply chain operations — we sit at a unique intersection: frontline operational knowledge meets cutting-edge quantum research.
+                </p>
+              </div>
+
+              {/* Pillar 2: The Product Opportunity */}
+              <div className="rounded-2xl border border-amber-500/25 p-6"
+                style={{ background: "oklch(0.1 0.03 80 / 0.4)" }}>
+                <div className="text-3xl mb-3">📦</div>
+                <h3 className="font-bold text-lg mb-3 text-amber-300">The Product Opportunity</h3>
+                <p className="text-white/65 text-sm leading-relaxed mb-4">
+                  Think of quantum as the next GPS. Before GPS existed, nobody asked for it. After GPS, entire industries were built on it — Uber, real-time logistics tracking, precision agriculture. Quantum computing will have the same effect on optimisation-heavy industries.
+                </p>
+                <p className="text-white/65 text-sm leading-relaxed">
+                  The logistics problems quantum solves — container repositioning, vessel stowage, intermodal routing, berth scheduling — are not theoretical. They are the exact problems our clients pay us to solve every day. Building quantum-ready products now positions our business unit as the go-to provider when the hardware matures.
+                </p>
+              </div>
+
+              {/* Pillar 3: Competitive Context */}
+              <div className="rounded-2xl border border-green-500/25 p-6"
+                style={{ background: "oklch(0.1 0.03 150 / 0.4)" }}>
+                <div className="text-3xl mb-3">🏁</div>
+                <h3 className="font-bold text-lg mb-3 text-green-300">Competitive Context</h3>
+                <p className="text-white/65 text-sm leading-relaxed mb-4">
+                  The competitive field is forming now. Accenture runs a well-established quantum practice with WEF backing. Deloitte focuses on advisory and risk. IBM Consulting builds on its own hardware stack. BCG and McKinsey publish market intelligence but do not deliver.
+                </p>
+                <p className="text-white/65 text-sm leading-relaxed">
+                  Our advantage: we are the only player combining Capgemini's quantum infrastructure with WNS's operational depth in shipping, trucking, freight forwarding, and air cargo. Theory plus practice. That combination is rare — and valuable.
+                </p>
+              </div>
+            </div>
+
+            {/* Competitive landscape table */}
+            <div className="rounded-2xl border border-border/40 p-6 mb-8"
+              style={{ background: "oklch(0.1 0.02 260 / 0.5)" }}>
+              <p className="text-sm font-mono text-muted-foreground uppercase tracking-wider mb-5">
+                Competitive Landscape: Who Is Doing What in Quantum Logistics
+              </p>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm text-left">
+                  <thead>
+                    <tr className="border-b border-white/10 text-muted-foreground">
+                      <th className="py-3 pr-4 font-semibold text-white/80">Organisation</th>
+                      <th className="py-3 pr-4 font-semibold text-white/80">Quantum Capability</th>
+                      <th className="py-3 pr-4 font-semibold text-white/80">Key Partnerships</th>
+                      <th className="py-3 font-semibold text-white/80">Positioning</th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-white/60">
+                    <tr className="border-b border-white/5">
+                      <td className="py-3 pr-4 font-semibold text-white/80">Capgemini + WNS</td>
+                      <td className="py-3 pr-4">Q-Lab (40+ experts, 5 countries), platform-agnostic</td>
+                      <td className="py-3 pr-4">IBM Quantum Hub, Pasqal, DARPA, Airbus</td>
+                      <td className="py-3 text-green-300">Application-driven + deep logistics operations</td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-3 pr-4 font-semibold text-white/80">Accenture</td>
+                      <td className="py-3 pr-4">Established quantum practice, WEF collaboration</td>
+                      <td className="py-3 pr-4">IBM, IonQ, D-Wave, MIT</td>
+                      <td className="py-3 text-white/50">Strategy advisory + broad ecosystem</td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-3 pr-4 font-semibold text-white/80">Deloitte</td>
+                      <td className="py-3 pr-4">Quantum computing services, scenario planning</td>
+                      <td className="py-3 pr-4">Multi-vendor, no dedicated lab</td>
+                      <td className="py-3 text-white/50">Advisory-first, risk quantification</td>
+                    </tr>
+                    <tr className="border-b border-white/5">
+                      <td className="py-3 pr-4 font-semibold text-white/80">IBM Consulting</td>
+                      <td className="py-3 pr-4">Built on IBM's own quantum hardware & Qiskit</td>
+                      <td className="py-3 pr-4">Native (own stack)</td>
+                      <td className="py-3 text-white/50">Deepest technical depth, less vendor-neutral</td>
+                    </tr>
+                    <tr>
+                      <td className="py-3 pr-4 font-semibold text-white/80">BCG / McKinsey</td>
+                      <td className="py-3 pr-4">Market intelligence, annual Quantum Tech Monitor</td>
+                      <td className="py-3 pr-4">Advisory partnerships only</td>
+                      <td className="py-3 text-white/50">Strategy only, no delivery capability</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <p className="text-xs text-muted-foreground mt-4">
+                Sources: Capgemini Q-Lab (est. Jan 2022) · Accenture Quantum Computing Practice · Deloitte Quantum Services · IBM Quantum Network · BCG Quantum Tech Monitor 2024
+              </p>
+            </div>
+
+            {/* What this means for you */}
+            <div className="rounded-2xl border border-border/40 p-8 mb-8"
+              style={{ background: "linear-gradient(135deg, oklch(0.1 0.03 200), oklch(0.12 0.04 260))" }}>
+              <p className="text-xs font-mono text-primary/60 uppercase tracking-widest mb-3">For Every Team</p>
+              <h2 className="text-2xl font-bold mb-6 text-white">
+                What This Means — No Matter Which Team You Are In
+              </h2>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                {[
+                  {
+                    icon: "📊",
+                    title: "Operations & Delivery",
+                    body: "The algorithms in these simulations are the same logic that will power the next generation of transport management systems. Understanding them today means you will recognise their real-world versions when they arrive in production tools — likely within 3-5 years.",
+                  },
+                  {
+                    icon: "🎓",
+                    title: "Training & Quality",
+                    body: "These simulations are designed as learning tools. Use them in team workshops, onboarding sessions, or lunch-and-learns. Each one explains what the algorithm does and why it matters for real-world logistics.",
+                  },
+                  {
+                    icon: "🔄",
+                    title: "Transformation & IT",
+                    body: "The architecture patterns behind quantum computing — hybrid classical-quantum workflows, API-based solver integration, cloud quantum access — will reshape enterprise IT. Familiarity with these concepts positions our technology roadmap ahead of the curve.",
+                  },
+                  {
+                    icon: "🌐",
+                    title: "Networking & Infrastructure",
+                    body: "Quantum computing requires new infrastructure: specialised data centres with cryogenic cooling, quantum-safe communication networks, and post-quantum encryption standards. These are procurement and planning decisions that start now, not in 2030.",
+                  },
+                  {
+                    icon: "💼",
+                    title: "Leadership & Strategy",
+                    body: "The window to build quantum expertise is 3-7 years. Companies that start learning today — through pilots, partnerships, and internal capability building — will lead the market. Those that wait will pay a premium to catch up. This tool is step one of that journey.",
+                  },
+                  {
+                    icon: "🤝",
+                    title: "Sales & Client Engagement",
+                    body: "Clients are already asking about quantum. Maersk, DB Schenker, DHL, and UPS all run active quantum pilots. Being able to have an informed conversation — backed by hands-on experience with these algorithms — is a differentiator in every client meeting.",
+                  },
+                ].map((item) => (
+                  <div key={item.title}
+                    className="rounded-xl border border-white/10 p-4"
+                    style={{ background: "oklch(0.1 0.015 260 / 0.5)" }}>
+                    <div className="text-2xl mb-2">{item.icon}</div>
+                    <h4 className="font-semibold text-sm text-white/90 mb-2">{item.title}</h4>
+                    <p className="text-xs text-white/55 leading-relaxed">{item.body}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Forward look */}
+            <div className="rounded-2xl border border-primary/20 p-8 text-center"
+              style={{ background: "oklch(0.09 0.03 240)" }}>
+              <p className="text-xs font-mono text-primary/60 uppercase tracking-widest mb-3">Looking Ahead</p>
+              <h2 className="text-2xl font-bold mb-4 text-white">
+                Where We Go From Here
+              </h2>
+              <div className="grid sm:grid-cols-3 gap-6 mt-6 text-left">
+                <div className="text-center">
+                  <div className="w-12 h-12 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-lg mx-auto mb-3">1</div>
+                  <h4 className="font-semibold text-white mb-2">Now — Build Awareness</h4>
+                  <p className="text-sm text-white/55 leading-relaxed">
+                    Share this tool across the business unit. Let every team — operations, training, quality, transformation, IT, networking — explore the simulations. Start the conversation about where quantum fits in our product roadmap.
+                  </p>
+                </div>
+                <div className="text-center">
+                  <div className="w-12 h-12 rounded-full bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-lg mx-auto mb-3">2</div>
+                  <h4 className="font-semibold text-white mb-2">Next — Identify Pilots</h4>
+                  <p className="text-sm text-white/55 leading-relaxed">
+                    Work with the Capgemini Q-Lab to identify one or two high-value logistics use cases where quantum can deliver measurable impact. Run a pilot. Produce a case study. Turn theory into evidence.
+                  </p>
+                </div>
+                <div className="text-center">
+                  <div className="w-12 h-12 rounded-full bg-green-500/20 border border-green-500/30 flex items-center justify-center text-lg mx-auto mb-3">3</div>
+                  <h4 className="font-semibold text-white mb-2">Then — Build Products</h4>
+                  <p className="text-sm text-white/55 leading-relaxed">
+                    Package the algorithms, the expertise, and the Capgemini partnership into quantum-ready products. Offer them to clients as the natural evolution of our logistics technology portfolio. Own the category before anyone else does.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* ─── FOOTER ───────────────────────────────────────────────── */}
       <footer className="border-t border-border/40 px-4 py-8 mt-4">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
@@ -727,11 +936,11 @@ export default function Index() {
             <div className="w-5 h-5 rounded bg-primary flex items-center justify-center">
               <span className="text-primary-foreground text-[9px] font-bold font-mono">Q</span>
             </div>
-            <span className="font-semibold text-foreground">QuantumSim</span>
+            <span className="font-semibold text-foreground">WNS Quantum Lab</span>
             <span>·</span>
-            <span>Interactive logistics &amp; quantum algorithm explorer</span>
+            <span>WNS · Part of Capgemini</span>
           </div>
-          <span className="font-mono">© {new Date().getFullYear()} · All algorithms are exact, not simulated approximations</span>
+          <span className="font-mono">© {new Date().getFullYear()} · Built to help teams understand the technologies shaping the next decade of logistics</span>
         </div>
       </footer>
     </div>

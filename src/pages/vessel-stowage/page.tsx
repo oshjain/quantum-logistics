@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import NavBar from "@/components/NavBar.tsx";
+import TutorialOverlay, { type TutorialStep } from "@/components/TutorialOverlay.tsx";
 import { cn } from "@/lib/utils.ts";
 import {
   CONTAINERS,
@@ -13,6 +14,35 @@ import {
   type Grid,
   type Port,
 } from "@/lib/vessel-stowage-solver.ts";
+
+const TUTORIAL_STEPS: TutorialStep[] = [
+  {
+    emoji: "🎯",
+    title: "Your Goal",
+    body: "Load all nine containers into the ship's 3×3 grid so that when the ship visits Port A, then Port B, then Port C, every container can be unloaded without moving anything else out of the way. Zero re-stows is a perfect score.",
+  },
+  {
+    emoji: "👆",
+    title: "How to Place Containers",
+    body: "First, click a container from the pool on the right to select it. Then click any empty cell in the grid to place it. Each column stacks three containers — bottom, middle, and top. You can only place into the lowest empty slot in any column.",
+  },
+  {
+    emoji: "⚓",
+    title: "Two Golden Rules",
+    body: "Rule 1: Heavy containers must go on the bottom row (tier 0). Light containers can go anywhere. Rule 2: Port A cargo must be on top — nothing from Port B or C can block it. Same for Port B vs Port C. Think of it as loading in reverse order of the port visits.",
+  },
+  {
+    emoji: "🚢",
+    title: "Sail to Test",
+    body: "Use the Sail button to simulate arriving at each port. The grid will highlight which containers are accessible and which are being blocked (yellow badge). This lets you test your plan before calling the Chief Mate to verify.",
+  },
+];
+
+const BUSINESS_CONTEXT = {
+  title: "Why This Matters for Vessel Planning",
+  body: "A real mega-ship carries 24,000 containers across six or more ports. One container placed in the wrong position can force a crane to reshuffle fifty others — each reshuffle burns fuel, adds delay, and risks cargo damage. The Chief Mate algorithm uses constraint satisfaction, the same logic that solves Sudoku puzzles. Classical computers handle small grids well, but at real-world scale this becomes one of the hardest problems in logistics. Quantum solvers are being designed specifically for problems like this.",
+  source: "Lloyd's List Intelligence, 2024 · Maersk/MSC vessel planning data",
+};
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
@@ -166,6 +196,7 @@ export default function VesselStowagedPage() {
   } | null>(null);
   const [solving, setSolving] = useState(false);
   const [showWow, setShowWow] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
 
   // place selected container into a cell
   const handleCellClick = useCallback(
@@ -237,6 +268,24 @@ export default function VesselStowagedPage() {
   return (
     <div className="min-h-screen bg-[#0a0f1e] text-white">
       <NavBar />
+
+      <TutorialOverlay
+        steps={TUTORIAL_STEPS}
+        storageKey="vessel-stowage"
+        businessContext={BUSINESS_CONTEXT}
+      />
+
+      {showTutorial && (
+        <TutorialOverlay
+          steps={TUTORIAL_STEPS}
+          storageKey="vessel-stowage-retrigger"
+          businessContext={BUSINESS_CONTEXT}
+          onComplete={() => {
+            setShowTutorial(false);
+            localStorage.removeItem("tutorial-dismissed-vessel-stowage-retrigger");
+          }}
+        />
+      )}
 
       <div className="max-w-5xl mx-auto px-4 py-8 space-y-6">
         {/* Title */}
@@ -400,6 +449,28 @@ export default function VesselStowagedPage() {
           >
             {solving ? "⏳ Chief Mate thinking…" : "⚓ Call the Chief Mate"}
           </button>
+          <button
+            onClick={() => {
+              localStorage.removeItem("tutorial-dismissed-vessel-stowage");
+              setShowTutorial(true);
+            }}
+            className="px-4 py-2 rounded-lg text-sm font-semibold transition-colors cursor-pointer bg-white/5 hover:bg-white/15 text-white/60 hover:text-white/90 border border-white/10"
+          >
+            ❓ How to Play
+          </button>
+        </div>
+
+        {/* Business Context Card */}
+        <div className="rounded-xl border border-amber-500/25 bg-amber-500/5 px-5 py-4">
+          <p className="text-amber-300 font-semibold text-sm mb-2">
+            💡 Why This Matters for Vessel Planning
+          </p>
+          <p className="text-white/60 text-sm leading-relaxed">
+            A real mega-ship carries 24,000 containers across six or more ports. One container placed in the wrong position can force a crane to reshuffle fifty others — each reshuffle burns fuel, adds delay, and risks cargo damage. The Chief Mate algorithm uses constraint satisfaction, the same logic that solves Sudoku puzzles. Classical computers handle small grids well, but at real-world scale this becomes one of the hardest problems in logistics. Quantum solvers are being designed specifically for problems like this.
+          </p>
+          <p className="text-[10px] text-white/30 font-mono mt-2">
+            Source: Lloyd's List Intelligence, 2024 · Maersk/MSC vessel planning data
+          </p>
         </div>
 
         {/* Check result */}

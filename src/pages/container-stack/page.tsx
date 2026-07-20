@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import NavBar from "@/components/NavBar.tsx";
+import TutorialOverlay, { type TutorialStep } from "@/components/TutorialOverlay.tsx";
 import { cn } from "@/lib/utils.ts";
 import {
   type Container,
@@ -23,6 +24,35 @@ const DIFFICULTY_LABELS: Record<Difficulty, { emoji: string; label: string; desc
   easy: { emoji: "🟢", label: "Easy", desc: "2–5 moves to solve" },
   medium: { emoji: "🟡", label: "Medium", desc: "5–9 moves to solve" },
   hard: { emoji: "🔴", label: "Hard", desc: "9–13 moves to solve" },
+};
+
+const TUTORIAL_STEPS: TutorialStep[] = [
+  {
+    emoji: "🎯",
+    title: "Your Goal",
+    body: "Sort the containers so they match the goal order at the top of your screen: Red → Blue → Green → Yellow → Purple, stacked bottom to top in the Main Stack. That is the correct sequence for the crane to load them onto a ship.",
+  },
+  {
+    emoji: "👆",
+    title: "How to Move Containers",
+    body: "Click the top container in any stack to pick it up. Then click another stack to place it there. You can only move the topmost container from each stack, just like in a real port terminal where the crane can only reach what is on top.",
+  },
+  {
+    emoji: "🔄",
+    title: "Use Your Buffers",
+    body: "The Main Stack holds up to 5 containers. Buffer 1 and Buffer 2 each hold up to 3. When a container is blocking the one you need, move it to a buffer — then bring it back later. Think of the buffers as temporary holding lanes.",
+  },
+  {
+    emoji: "🤖",
+    title: "Smart Crane (AI Helper)",
+    body: "Stuck? Hit the Smart Crane button. It uses an algorithm called Breadth-First Search — it explores every possible sequence of moves, level by level, and finds the absolute shortest path to the goal. You can then watch it replay the optimal solution step by step.",
+  },
+];
+
+const BUSINESS_CONTEXT = {
+  title: "Why This Matters for Port Operations",
+  body: "A typical container terminal handles thousands of reshuffles every week. Every extra crane move costs around $600 in fuel, equipment wear, and labour. A 24,000 TEU vessel visiting six ports has more possible stacking arrangements than there are atoms in the observable universe. Algorithms like the one behind Smart Crane help port planners minimise reshuffles — and quantum computers will one day solve this at a scale classical computers cannot match.",
+  source: "Drewry Maritime Research, 2024 · Port of Rotterdam Digital Twin Programme",
 };
 
 // ── single container block ───────────────────────────────────────────────────
@@ -166,6 +196,7 @@ export default function ContainerStackPage() {
   const [solveSteps, setSolveSteps] = useState<Move[]>([]);
   const [solveStep, setSolveStep] = useState(0);
   const [thinking, setThinking] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const disabled = phase === "solving" || phase === "solved";
@@ -328,6 +359,25 @@ export default function ContainerStackPage() {
   return (
     <div className="min-h-screen" style={{ background: "oklch(0.06 0.02 260)" }}>
       <NavBar />
+
+      <TutorialOverlay
+        steps={TUTORIAL_STEPS}
+        storageKey="container-stack"
+        businessContext={BUSINESS_CONTEXT}
+      />
+
+      {/* Re-trigger tutorial */}
+      {showTutorial && (
+        <TutorialOverlay
+          steps={TUTORIAL_STEPS}
+          storageKey="container-stack-retrigger"
+          businessContext={BUSINESS_CONTEXT}
+          onComplete={() => {
+            setShowTutorial(false);
+            localStorage.removeItem("tutorial-dismissed-container-stack-retrigger");
+          }}
+        />
+      )}
 
       <main className="max-w-4xl mx-auto px-4 py-8 flex flex-col gap-6">
         {/* ── Title ── */}
@@ -520,6 +570,28 @@ export default function ContainerStackPage() {
           >
             {thinking ? "🤔 Thinking…" : phase === "user-won" ? "🤖 Smart Crane ops — Compare" : "🤖 Smart Crane ops"}
           </button>
+          <button
+            onClick={() => {
+              localStorage.removeItem("tutorial-dismissed-container-stack");
+              setShowTutorial(true);
+            }}
+            className="px-5 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer bg-white/5 hover:bg-white/15 text-white/60 hover:text-white/90 border border-white/10"
+          >
+            ❓ How to Play
+          </button>
+        </div>
+
+        {/* ── Business Context Card ── */}
+        <div className="rounded-xl border border-amber-500/25 bg-amber-500/5 px-5 py-4">
+          <p className="text-amber-300 font-semibold text-sm mb-2">
+            💡 Why This Matters for Port Operations
+          </p>
+          <p className="text-white/60 text-sm leading-relaxed">
+            A typical container terminal handles thousands of reshuffles every week. Every extra crane move costs around $600 in fuel, equipment wear, and labour. A 24,000 TEU vessel visiting six ports has more possible stacking arrangements than there are atoms in the observable universe. Algorithms like the one behind Smart Crane help port planners minimise reshuffles — and quantum computers will one day solve this at a scale classical computers cannot match.
+          </p>
+          <p className="text-[10px] text-white/30 font-mono mt-2">
+            Source: Drewry Maritime Research, 2024 · Port of Rotterdam Digital Twin Programme
+          </p>
         </div>
 
         {/* ── Quantum BFS Explanation ── */}
