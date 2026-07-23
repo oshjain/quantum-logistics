@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
-import { msalInstance, LOGIN_SCOPES } from "./config.ts";
+import { msalInstance, CLIENT_ID, LOGIN_SCOPES } from "./config.ts";
 
 /* ─── Types ────────────────────────────────────────────────────── */
 interface AuthContextValue {
@@ -7,6 +7,7 @@ interface AuthContextValue {
   name: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  signedOut: boolean;
   signIn: () => void;
   signOut: () => void;
 }
@@ -16,6 +17,7 @@ const AuthContext = createContext<AuthContextValue>({
   name: null,
   isAuthenticated: false,
   isLoading: true,
+  signedOut: false,
   signIn: () => {},
   signOut: () => {},
 });
@@ -37,11 +39,25 @@ function decodeIdToken(idToken: string): { email: string; name: string } {
   }
 }
 
+/* ─── Clear MSAL's local cache for this app only ──────────────── */
+function clearAppLocalCache() {
+  sessionStorage.removeItem("quantum_auth_user");
+  const keysToRemove: string[] = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.includes(CLIENT_ID)) {
+      keysToRemove.push(key);
+    }
+  }
+  keysToRemove.forEach((key) => localStorage.removeItem(key));
+}
+
 /* ─── AuthProvider ──────────────────────────────────────────────── */
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [email, setEmail] = useState<string | null>(null);
   const [name, setName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [signedOut, setSignedOut] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -83,7 +99,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           sessionStorage.removeItem("quantum_auth_user");
         }
 
-        // No auth found — auto-redirect to Microsoft login
+        // Check if user just signed out — show signed-out page instead of redirecting
+        const params = new URLSearchParams(window.location.search);
+        if (params.has("signedOut")) {
+          window.history.replaceState({}, "", "/");
+          setSignedOut(true);
+          setLoading(false);
+          return;
+        }
+
+        // No auth found and not a sign-out — auto-redirect to Microsoft login
         setLoading(false);
         msalInstance.loginRedirect({ scopes: LOGIN_SCOPES });
       } catch (err) {
@@ -100,12 +125,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signOut = () => {
-    sessionStorage.removeItem("quantum_auth_user");
+    // Clear local session only — does NOT call Microsoft logout
+    // so other org apps stay signed in
     setEmail(null);
     setName(null);
-    msalInstance.logoutRedirect({
-      postLogoutRedirectUri: window.location.origin,
-    });
+    setSignedOut(true);
+    clearAppLocalCache();
+    window.location.href = "/?signedOut=true";
   };
 
   if (loading) {
@@ -120,7 +146,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ email, name, isAuthenticated: !!email, isLoading: false, signIn, signOut }}>
+    <AuthContext.Provider value={{ email, name, isAuthenticated: !!email, isLoading: false, signedOut, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   );
