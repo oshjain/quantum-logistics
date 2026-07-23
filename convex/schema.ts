@@ -12,9 +12,10 @@ export default defineSchema({
     email: v.string(),
     targetType: v.string(),   // "game" | "topic"
     targetId: v.string(),     // game path (e.g. "/container-stack") or topic name (e.g. "Shipping Lines")
-    action: v.string(),       // "like" | "dislike"
+    action: v.string(),       // "like" | "dislike" | "removed"
     feedback: v.optional(v.string()),
     createdAt: v.number(),
+    removedAt: v.optional(v.number()),
   })
     .index("by_target", ["targetType", "targetId"])
     .index("by_user", ["email"])

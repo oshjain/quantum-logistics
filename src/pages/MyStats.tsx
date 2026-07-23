@@ -35,6 +35,7 @@ export default function MyStats() {
   const userLikes = useQuery(api.likes.getUserLikes, { email: email ?? "" });
   const userRating = useQuery(api.ratings.getUserRating, { email: email ?? "" });
   const pageStats = useQuery(api.pageVisits.getUserPageStats, { email: email ?? "" });
+  const recentVisits = useQuery(api.pageVisits.getRecentVisits, { email: email ?? "", limit: 30 });
 
   if (!email) {
     return (
@@ -56,6 +57,10 @@ export default function MyStats() {
   const gameLikes = userLikes?.filter((l) => l.targetType === "game" && l.action === "like") ?? [];
   const gameDislikes = userLikes?.filter((l) => l.targetType === "game" && l.action === "dislike") ?? [];
   const topicLikes = userLikes?.filter((l) => l.targetType === "topic" && l.action === "like") ?? [];
+  const removedGameLikes = userLikes?.filter((l) => l.targetType === "game" && l.action === "removed") ?? [];
+  const removedTopicLikes = userLikes?.filter((l) => l.targetType === "topic" && l.action === "removed") ?? [];
+  const allTimeGameLikes = gameLikes.length + removedGameLikes.length;
+  const allTimeTopicLikes = topicLikes.length + removedTopicLikes.length;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -93,8 +98,8 @@ export default function MyStats() {
               {[
                 { label: "Pages Visited", value: pageStats?.uniquePages ?? 0, icon: "👀" },
                 { label: "Total Visits", value: pageStats?.totalVisits ?? 0, icon: "🔄" },
-                { label: "Games Liked", value: gameLikes.length, icon: "♥️" },
-                { label: "Topics Liked", value: topicLikes.length, icon: "🏷️" },
+                { label: "Games Liked", value: gameLikes.length, icon: "♥️", sub: `${allTimeGameLikes} all-time` },
+                { label: "Topics Liked", value: topicLikes.length, icon: "🏷️", sub: `${allTimeTopicLikes} all-time` },
               ].map((stat) => (
                 <div key={stat.label} className="rounded-xl border border-border/40 p-4 text-center bg-card/50">
                   <div className="text-2xl mb-1">{stat.icon}</div>
@@ -102,6 +107,9 @@ export default function MyStats() {
                     <AnimatedCounter to={stat.value} duration={1.5} />
                   </p>
                   <p className="text-[10px] text-muted-foreground font-mono mt-1">{stat.label}</p>
+                  {stat.sub && (
+                    <p className="text-[9px] text-muted-foreground/60 font-mono -mt-0.5">{stat.sub}</p>
+                  )}
                 </div>
               ))}
             </div>
@@ -169,6 +177,45 @@ export default function MyStats() {
           </div>
         </FadeInView>
 
+        {/* ═══════ RECENT ACTIVITY ═══════ */}
+        <FadeInView direction="up" delay={0.08}>
+          <div className="rounded-2xl border border-border/40 p-6 bg-card/50">
+            <h2 className="text-sm font-bold mb-4 flex items-center gap-2">
+              <span>🕐</span> Recent Activity
+            </h2>
+            {recentVisits && recentVisits.length > 0 ? (
+              <div className="space-y-1 max-h-64 overflow-y-auto">
+                {recentVisits.slice(0, 20).map((visit) => (
+                  <Link
+                    key={visit._id}
+                    to={visit.page}
+                    className="flex items-center justify-between px-3 py-1.5 rounded-lg hover:bg-muted/30 transition-colors group text-sm"
+                  >
+                    <span className="flex items-center gap-2">
+                      <span className="text-sm">{getGameEmoji(visit.page)}</span>
+                      <span className="text-muted-foreground group-hover:text-foreground transition-colors">
+                        {visit.pageTitle ?? visit.page}
+                      </span>
+                    </span>
+                    <span className="text-[10px] font-mono text-muted-foreground whitespace-nowrap">
+                      {new Date(visit.visitedAt).toLocaleDateString(undefined, {
+                        month: "short", day: "numeric",
+                      })}{" "}
+                      <span className="text-muted-foreground/50">
+                        {new Date(visit.visitedAt).toLocaleTimeString(undefined, {
+                          hour: "2-digit", minute: "2-digit",
+                        })}
+                      </span>
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground py-4 text-center">No activity yet.</p>
+            )}
+          </div>
+        </FadeInView>
+
         {/* ═══════ LIKED GAMES ═══════ */}
         <FadeInView direction="up" delay={0.1}>
           <div className="rounded-2xl border border-border/40 p-6 bg-card/50">
@@ -191,8 +238,11 @@ export default function MyStats() {
                     <span className="flex-1 text-sm font-medium group-hover:text-primary transition-colors">
                       {getGameTitle(like.targetId)}
                     </span>
-                    <span className="text-[10px] text-muted-foreground font-mono">
-                      {new Date(like.createdAt).toLocaleDateString()}
+                    <span className="text-[10px] text-muted-foreground font-mono whitespace-nowrap" title={new Date(like.createdAt).toLocaleString()}>
+                      {new Date(like.createdAt).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+                      <span className="text-muted-foreground/50 ml-1">
+                        {new Date(like.createdAt).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}
+                      </span>
                     </span>
                   </Link>
                 ))}
@@ -236,6 +286,57 @@ export default function MyStats() {
                       <p className="text-xs text-muted-foreground mt-1 italic">"{d.feedback}"</p>
                     )}
                   </div>
+                ))}
+              </div>
+            </div>
+          </FadeInView>
+        )}
+
+        {/* ═══════ PREVIOUSLY LIKED GAMES ═══════ */}
+        {removedGameLikes.length > 0 && (
+          <FadeInView direction="up" delay={0.22}>
+            <div className="rounded-2xl border border-border/40 p-6 bg-card/50">
+              <h2 className="text-sm font-bold mb-4 flex items-center gap-2">
+                <span>💔</span> Previously Liked Games
+                <span className="text-[10px] font-mono text-muted-foreground ml-auto">{removedGameLikes.length} unliked</span>
+              </h2>
+              <div className="grid sm:grid-cols-2 gap-2">
+                {removedGameLikes.map((like) => (
+                  <Link
+                    key={like._id}
+                    to={like.targetId}
+                    className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-muted/30 transition-colors group opacity-60 hover:opacity-100"
+                  >
+                    <span className="text-xl">{getGameEmoji(like.targetId)}</span>
+                    <span className="flex-1 text-sm font-medium group-hover:text-primary transition-colors">
+                      {getGameTitle(like.targetId)}
+                    </span>
+                    <span className="text-[10px] text-muted-foreground font-mono whitespace-nowrap" title={new Date(like.createdAt).toLocaleString()}>
+                      {new Date(like.createdAt).toLocaleDateString(undefined, { month: "short", day: "numeric" })}
+                      <span className="text-muted-foreground/50 ml-1">
+                        {new Date(like.createdAt).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}
+                      </span>
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </FadeInView>
+        )}
+
+        {/* ═══════ PREVIOUSLY LIKED TOPICS ═══════ */}
+        {removedTopicLikes.length > 0 && (
+          <FadeInView direction="up" delay={0.24}>
+            <div className="rounded-2xl border border-border/40 p-6 bg-card/50">
+              <h2 className="text-sm font-bold mb-4 flex items-center gap-2">
+                <span>💔</span> Previously Liked Topics
+                <span className="text-[10px] font-mono text-muted-foreground ml-auto">{removedTopicLikes.length} unliked</span>
+              </h2>
+              <div className="flex flex-wrap gap-2">
+                {removedTopicLikes.map((like) => (
+                  <span key={like._id} className="px-3 py-1.5 rounded-full bg-muted/30 border border-border/20 text-muted-foreground text-xs font-medium line-through decoration-muted-foreground/40">
+                    {like.targetId}
+                  </span>
                 ))}
               </div>
             </div>

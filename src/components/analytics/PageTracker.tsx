@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
 import { useAuthContext } from "@/lib/auth/index.ts";
@@ -27,18 +28,18 @@ const PAGE_TITLES: Record<string, string> = {
 };
 
 export function PageTracker() {
+  const { pathname } = useLocation();
   const { email } = useAuthContext();
   const recordVisit = useMutation(api.pageVisits.recordVisit);
-  const trackedRef = useRef<string>("");
+  const lastPathRef = useRef<string>("");
 
   useEffect(() => {
     if (!email) return;
-    const path = window.location.pathname;
-    if (trackedRef.current === path) return; // only track once per page load
-    trackedRef.current = path;
-    const pageTitle = PAGE_TITLES[path] ?? path;
-    recordVisit({ email, page: path, pageTitle });
-  }, [email, recordVisit]);
+    if (lastPathRef.current === pathname) return; // skip duplicate
+    lastPathRef.current = pathname;
+    const pageTitle = PAGE_TITLES[pathname] ?? pathname;
+    recordVisit({ email, page: pathname, pageTitle });
+  }, [email, pathname, recordVisit]);
 
   return null; // invisible component
 }

@@ -20,12 +20,17 @@ export const toggleLike = mutation({
 
     if (existing) {
       if (existing.action === "like") {
-        // Already liked — unlike (remove)
-        await ctx.db.delete(existing._id);
+        // Already liked — unlike (remove), keep history
+        await ctx.db.patch(existing._id, { action: "removed", removedAt: Date.now() });
         return { action: "removed" };
       }
-      // Was disliked — update to like
-      await ctx.db.patch(existing._id, { action: "like", feedback: undefined, createdAt: Date.now() });
+      // Was disliked or removed — update to like
+      await ctx.db.patch(existing._id, {
+        action: "like",
+        feedback: undefined,
+        createdAt: Date.now(),
+        removedAt: undefined,
+      });
       return { action: "liked" };
     }
 
@@ -58,12 +63,17 @@ export const toggleDislike = mutation({
 
     if (existing) {
       if (existing.action === "dislike") {
-        // Already disliked — remove
-        await ctx.db.delete(existing._id);
+        // Already disliked — remove, keep history
+        await ctx.db.patch(existing._id, { action: "removed", removedAt: Date.now() });
         return { action: "removed" };
       }
-      // Was liked — update to dislike
-      await ctx.db.patch(existing._id, { action: "dislike", feedback: args.feedback, createdAt: Date.now() });
+      // Was liked or removed — update to dislike
+      await ctx.db.patch(existing._id, {
+        action: "dislike",
+        feedback: args.feedback,
+        createdAt: Date.now(),
+        removedAt: undefined,
+      });
       return { action: "disliked" };
     }
 

@@ -70,6 +70,18 @@ function aggregateByDay(visits: { visitedAt: number }[]) {
     .sort((a, b) => a.date.localeCompare(b.date));
 }
 
+/* ─── Get recent visits with full timestamps ──────────────────── */
+export const getRecentVisits = query({
+  args: { email: v.string(), limit: v.optional(v.number()) },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("pageVisits")
+      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .order("desc")
+      .take(args.limit ?? 50);
+  },
+});
+
 /* ─── Global analytics (admin-ish) ──────────────────────────────── */
 export const getGlobalAnalytics = query({
   args: {},
