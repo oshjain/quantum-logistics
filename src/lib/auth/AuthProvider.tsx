@@ -46,6 +46,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     (async () => {
       try {
+        // Clear any stale SPA redirect from previous 404.html visits
+        sessionStorage.removeItem("spa_redirect");
+
         await msalInstance.initialize();
 
         // MSAL handles the redirect and token exchange in-browser
@@ -89,8 +92,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signIn = () => {
-    // Save the current page so we can redirect back after login
-    sessionStorage.setItem("auth_redirect", window.location.pathname);
     msalInstance.loginRedirect({
       scopes: LOGIN_SCOPES,
     });
@@ -104,18 +105,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       postLogoutRedirectUri: window.location.origin,
     });
   };
-
-  // On mount, handle post-login redirect
-  useEffect(() => {
-    const redirect = sessionStorage.getItem("auth_redirect");
-    if (redirect && redirect !== "/") {
-      sessionStorage.removeItem("auth_redirect");
-      // Delay so MSAL can process first
-      setTimeout(() => {
-        window.location.replace(redirect);
-      }, 0);
-    }
-  }, [email]);
 
   if (loading) {
     return (
