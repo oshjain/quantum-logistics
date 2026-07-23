@@ -8,6 +8,10 @@
  * @module
  */
 
+import type * as authActions from "../authActions.js";
+import type * as likes from "../likes.js";
+import type * as pageVisits from "../pageVisits.js";
+import type * as ratings from "../ratings.js";
 import type * as users from "../users.js";
 
 import type {
@@ -17,6 +21,10 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  authActions: typeof authActions;
+  likes: typeof likes;
+  pageVisits: typeof pageVisits;
+  ratings: typeof ratings;
   users: typeof users;
 }>;
 

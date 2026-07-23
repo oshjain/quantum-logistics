@@ -1,14 +1,17 @@
 import { Link, useLocation } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils.ts";
+import { useAuthContext } from "@/lib/auth/index.ts";
 
-// Only show the main nav links; the rest are on the home page
 const navItems = [
   { path: "/", label: "🏠 Home" },
+  { path: "/learn", label: "📚 Learn" },
+  { path: "/strategy", label: "📊 Strategy" },
 ];
 
 export default function NavBar() {
   const location = useLocation();
+  const { email } = useAuthContext();
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -88,7 +91,7 @@ export default function NavBar() {
               open ? "bg-primary/15 text-primary" : "text-muted-foreground hover:text-foreground hover:bg-secondary"
             )}
           >
-            Simulations
+            🎮 Simulations
             <span className="text-xs opacity-60">{open ? "▲" : "▼"}</span>
           </button>
 
@@ -96,6 +99,13 @@ export default function NavBar() {
             <div
               className="absolute top-full left-0 mt-1 w-72 max-w-[calc(100vw-2rem)] rounded-xl border border-border bg-card shadow-2xl z-50 p-3 space-y-3 max-h-[calc(100vh-5rem)] overflow-y-auto"
             >
+              <Link
+                to="/simulations"
+                onClick={() => setOpen(false)}
+                className="block px-2 py-2 rounded-lg text-sm font-semibold text-primary hover:bg-primary/10 transition-colors border-b border-border/30 mb-1"
+              >
+                🎮 Browse All Simulations →
+              </Link>
               {ALL_LINKS.map((group) => (
                 <div key={group.group}>
                   <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider mb-1 px-1">{group.group}</p>
@@ -120,10 +130,25 @@ export default function NavBar() {
           )}
         </div>
 
-        {/* Current page label */}
-        <span className="ml-auto text-xs text-muted-foreground font-mono hidden sm:block truncate max-w-xs">
-          {ALL_LINKS.flatMap(g => g.links).find(l => l.path === location.pathname)?.label ?? ""}
-        </span>
+        {/* My Stats + User */}
+        <div className="ml-auto flex items-center gap-3">
+          <Link
+            to="/my-stats"
+            className={cn(
+              "px-3 py-1.5 rounded-md text-sm font-medium transition-colors whitespace-nowrap hidden sm:block",
+              location.pathname === "/my-stats"
+                ? "bg-primary/15 text-primary"
+                : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+            )}
+          >
+            👤 My Stats
+          </Link>
+          {email && (
+            <span className="text-[10px] text-muted-foreground font-mono truncate max-w-[120px] hidden lg:block" title={email}>
+              {email}
+            </span>
+          )}
+        </div>
       </div>
     </header>
   );
