@@ -25,13 +25,13 @@ export function useAuthContext() {
 }
 
 /* ─── PKCE helpers ─────────────────────────────────────────────── */
-function base64Url(buffer: ArrayBuffer): string {
-  return btoa(String.fromCharCode(...new Uint8Array(buffer)))
+function base64Url(bytes: Uint8Array): string {
+  return btoa(String.fromCharCode(...bytes))
     .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
-async function sha256(plain: string): Promise<ArrayBuffer> {
-  return crypto.subtle.digest("SHA-256", new TextEncoder().encode(plain));
+async function sha256(plain: string): Promise<Uint8Array> {
+  return new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(plain)));
 }
 
 const STATE_KEY = "quantum_auth_state";
