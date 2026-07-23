@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { BrowserRouter, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { PageTransition } from "./components/animations/index.ts";
 import { PageTracker } from "./components/analytics/index.ts";
 import { FloatingGameBar } from "./components/likes/index.ts";
@@ -43,19 +43,6 @@ function ScrollToTop() {
   return null;
 }
 
-/** Handles GitHub Pages SPA fallback: restores the original path saved by 404.html */
-function SpaRedirect() {
-  const navigate = useNavigate();
-  useEffect(() => {
-    const saved = sessionStorage.getItem("spa_redirect");
-    if (saved && saved !== "/") {
-      sessionStorage.removeItem("spa_redirect");
-      navigate(saved, { replace: true });
-    }
-  }, [navigate]);
-  return null;
-}
-
 function PageShell({ children }: { children: React.ReactNode }) {
   const { pathname } = useLocation();
   const isGame = GAME_PATHS.has(pathname);
@@ -67,7 +54,6 @@ export default function App() {
     <DefaultProviders>
       <BrowserRouter>
         <ScrollToTop />
-        <SpaRedirect />
         <PageTracker />
         <FloatingGameBar />
         <GlobalRatingButton />
