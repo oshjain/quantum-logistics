@@ -1,7 +1,7 @@
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
 import NavBar from "@/components/NavBar.tsx";
-import { useAuthContext } from "@/lib/auth/index.ts";
+import { useAuthContext, msalInstance } from "@/lib/auth/index.ts";
 import { HeartButton } from "@/components/likes/index.ts";
 import { StarRating } from "@/components/ratings/index.ts";
 import { RatingModal } from "@/components/ratings/index.ts";
@@ -40,8 +40,14 @@ export default function MyStats() {
     return (
       <div className="min-h-screen flex flex-col">
         <NavBar />
-        <div className="flex-1 flex items-center justify-center">
+        <div className="flex-1 flex flex-col items-center justify-center gap-4">
           <p className="text-muted-foreground">Sign in to view your stats...</p>
+          <button
+            onClick={() => msalInstance.loginRedirect({ scopes: ["openid", "profile", "email"] })}
+            className="px-6 py-2.5 rounded-xl bg-primary text-primary-foreground font-semibold text-sm hover:opacity-90 transition-opacity"
+          >
+            Sign in with Microsoft
+          </button>
         </div>
       </div>
     );
