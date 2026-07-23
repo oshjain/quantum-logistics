@@ -83,7 +83,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           sessionStorage.removeItem("quantum_auth_user");
         }
 
+        // No auth found — auto-redirect to Microsoft login
         setLoading(false);
+        msalInstance.loginRedirect({ scopes: LOGIN_SCOPES });
       } catch (err) {
         console.error("[Auth] Bootstrap error:", err);
         setLoading(false);
