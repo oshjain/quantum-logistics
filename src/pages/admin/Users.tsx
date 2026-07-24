@@ -5,7 +5,7 @@ import { useAuthContext } from "@/lib/auth/index.ts";
 import NavBar from "@/components/NavBar.tsx";
 import { FadeInView } from "@/components/animations/index.ts";
 import { motion, AnimatePresence } from "motion/react";
-import { Search, UserCog, Trash2, Shield, ShieldCheck, Eye, Pencil, X, Check } from "lucide-react";
+import { Search, UserCog, Trash2, Shield, ShieldCheck, Eye, Pencil, X, Check, Plus, UserPlus } from "lucide-react";
 
 const ROLE_OPTIONS = ["Viewer", "Admin", "Super Admin"] as const;
 
@@ -17,12 +17,18 @@ export default function UserManagement() {
   const [editEmail, setEditEmail] = useState("");
   const [editRole, setEditRole] = useState<string>("Viewer");
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [addEmail, setAddEmail] = useState("");
+  const [addName, setAddName] = useState("");
+  const [addRole, setAddRole] = useState<string>("Viewer");
+  const [addError, setAddError] = useState("");
 
   const currentUser = useQuery(api.users.getUserByEmail, { email: email ?? "" });
   const allUsers = useQuery(api.users.getAllUsers, { adminEmail: email ?? "" });
 
   const updateUser = useMutation(api.users.updateUser);
   const deleteUser = useMutation(api.users.deleteUser);
+  const createUser = useMutation(api.users.createUser);
 
   const isSuperAdmin = currentUser?.role === "Super Admin";
 
@@ -51,6 +57,25 @@ export default function UserManagement() {
     setEditName(user.name ?? "");
     setEditEmail(user.email);
     setEditRole(user.role);
+  };
+
+  const handleAddUser = async () => {
+    if (!addEmail.trim()) return;
+    setAddError("");
+    try {
+      await createUser({
+        adminEmail: email,
+        email: addEmail.trim(),
+        name: addName.trim() || undefined,
+        role: addRole,
+      });
+      setAddEmail("");
+      setAddName("");
+      setAddRole("Viewer");
+      setShowAddForm(false);
+    } catch (err: any) {
+      setAddError(err.message || "Failed to create user");
+    }
   };
 
   const handleSave = async () => {
@@ -108,16 +133,92 @@ export default function UserManagement() {
 
       <div className="max-w-6xl mx-auto w-full px-4 pb-20">
         <FadeInView direction="up">
-          {/* Search */}
-          <div className="relative mb-6">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search users by email or name..."
-              className="w-full rounded-xl border border-border/50 bg-background pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-purple-500/40 focus:ring-1 focus:ring-purple-500/20 transition-all"
-            />
+          {/* Add User Toggle + Search */}
+          <div className="flex items-center gap-3 mb-6">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search users by email or name..."
+                className="w-full rounded-xl border border-border/50 bg-background pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-purple-500/40 focus:ring-1 focus:ring-purple-500/20 transition-all"
+              />
+            </div>
+            <button
+              onClick={() => { setShowAddForm(!showAddForm); setAddError(""); }}
+              className={`flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold transition-all whitespace-nowrap ${
+                showAddForm
+                  ? "bg-red-500/10 text-red-400 border border-red-500/20"
+                  : "bg-purple-500 text-white hover:bg-purple-600 shadow-lg shadow-purple-500/20"
+              }`}
+            >
+              {showAddForm ? <X className="size-4" /> : <UserPlus className="size-4" />}
+              {showAddForm ? "Cancel" : "Add User"}
+            </button>
           </div>
+
+          {/* Add User Form */}
+          <AnimatePresence>
+            {showAddForm && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                className="overflow-hidden mb-6"
+              >
+                <div className="rounded-xl border border-purple-500/20 bg-gradient-to-r from-purple-500/5 to-transparent p-5">
+                  <h3 className="text-sm font-bold mb-4 flex items-center gap-2">
+                    <UserPlus className="size-4 text-purple-400" />
+                    <span>Create New User</span>
+                  </h3>
+                  <div className="grid sm:grid-cols-4 gap-3">
+                    <div>
+                      <label className="text-[9px] font-mono text-muted-foreground uppercase tracking-wider mb-1 block">Email *</label>
+                      <input
+                        value={addEmail}
+                        onChange={(e) => setAddEmail(e.target.value)}
+                        placeholder="user@domain.com"
+                        className="w-full rounded-lg border border-border/50 bg-background px-3 py-2 text-sm focus:outline-none focus:border-purple-500/40"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[9px] font-mono text-muted-foreground uppercase tracking-wider mb-1 block">Name</label>
+                      <input
+                        value={addName}
+                        onChange={(e) => setAddName(e.target.value)}
+                        placeholder="Full name"
+                        className="w-full rounded-lg border border-border/50 bg-background px-3 py-2 text-sm focus:outline-none focus:border-purple-500/40"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[9px] font-mono text-muted-foreground uppercase tracking-wider mb-1 block">Role *</label>
+                      <select
+                        value={addRole}
+                        onChange={(e) => setAddRole(e.target.value)}
+                        className="w-full rounded-lg border border-border/50 bg-background px-3 py-2 text-sm focus:outline-none focus:border-purple-500/40"
+                      >
+                        {ROLE_OPTIONS.map((r) => (
+                          <option key={r} value={r}>{r}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="flex items-end">
+                      <button
+                        onClick={handleAddUser}
+                        disabled={!addEmail.trim()}
+                        className="w-full px-4 py-2 rounded-lg bg-purple-500 text-white text-sm font-semibold disabled:opacity-40 hover:bg-purple-600 transition-all flex items-center justify-center gap-2"
+                      >
+                        <Plus className="size-4" /> Create
+                      </button>
+                    </div>
+                  </div>
+                  {addError && (
+                    <p className="text-xs text-red-400 mt-3">{addError}</p>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* User list */}
           <div className="space-y-2">

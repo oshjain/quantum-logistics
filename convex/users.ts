@@ -154,6 +154,37 @@ export const updateUser = mutation({
 });
 
 /**
+ * Create a new user (Super Admin only).
+ */
+export const createUser = mutation({
+  args: {
+    adminEmail: v.string(),
+    email: v.string(),
+    name: v.optional(v.string()),
+    role: v.string(),
+  },
+  handler: async (ctx, args) => {
+    await assertSuperAdmin(ctx, args.adminEmail);
+
+    // Check if email already exists
+    const existing = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .unique();
+    if (existing) {
+      throw new Error(`User with email ${args.email} already exists.`);
+    }
+
+    return await ctx.db.insert("users", {
+      email: args.email,
+      name: args.name ?? args.email,
+      role: args.role,
+      createdAt: Date.now(),
+    });
+  },
+});
+
+/**
  * Delete a user (Super Admin only).
  */
 export const deleteUser = mutation({
