@@ -55,7 +55,7 @@ export default function Index() {
           style={{ background: "radial-gradient(ellipse, #a855f7, transparent 70%)" }}
         />
 
-        <div className="relative z-10 max-w-5xl mx-auto px-4 text-center pt-24 pb-16">
+        <div className="relative z-10 max-w-5xl mx-auto px-4 text-center pt-12 pb-16">
           <FadeInView delay={0.1}>
             <div className="inline-flex items-center gap-2 border border-primary/25 bg-primary/8 text-primary px-4 py-1.5 rounded-full text-xs font-medium mb-8 font-mono tracking-wider">
               ⚛ WNS Quantum Lab &nbsp;·&nbsp; Part of Capgemini

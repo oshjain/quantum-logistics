@@ -108,6 +108,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           return;
         }
 
+        // ═══ SSO: try silent auth from cached MSAL accounts ═══
+        // If the user has logged into this app before (or any other
+        // O365 app in this browser), MSAL has cached account info
+        // in localStorage. We can try to get a token silently without
+        // redirecting — this uses O365 session cookies under the hood.
+        const accounts = msalInstance.getAllAccounts();
+        if (accounts.length > 0) {
+          try {
+            const silentResult = await msalInstance.acquireTokenSilent({
+              scopes: LOGIN_SCOPES,
+              account: accounts[0],
+            });
+            if (silentResult.idToken) {
+              const user = decodeIdToken(silentResult.idToken);
+              if (user.email) {
+                setEmail(user.email);
+                setName(user.name);
+                sessionStorage.setItem("quantum_auth_user", JSON.stringify({
+                  email: user.email,
+                  name: user.name,
+                  expiresAt: Date.now() + 3600000,
+                }));
+                setLoading(false);
+                return;
+              }
+            }
+          } catch {
+            // Silent acquisition failed (session expired, password
+            // changed, etc.) — fall through to redirect login below
+          }
+        }
+
         // No auth found and not a sign-out — auto-redirect to Microsoft login
         setLoading(false);
         msalInstance.loginRedirect({ scopes: LOGIN_SCOPES });
