@@ -36,6 +36,7 @@ export default function MyStats() {
   const userRating = useQuery(api.ratings.getUserRating, { email: email ?? "" });
   const pageStats = useQuery(api.pageVisits.getUserPageStats, { email: email ?? "" });
   const recentVisits = useQuery(api.pageVisits.getRecentVisits, { email: email ?? "", limit: 30 });
+  const userIdeas = useQuery(api.ideas.getUserIdeas, { email: email ?? "" });
 
   if (!email) {
     return (
@@ -342,6 +343,67 @@ export default function MyStats() {
             </div>
           </FadeInView>
         )}
+
+        {/* ═══════ MY IDEAS ═══════ */}
+        <FadeInView direction="up" delay={0.23}>
+          <div className="rounded-2xl border border-border/40 p-6 bg-card/50">
+            <h2 className="text-sm font-bold mb-4 flex items-center gap-2">
+              <span>💡</span> My Ideas
+              {userIdeas && userIdeas.length > 0 && (
+                <span className="text-[10px] font-mono text-muted-foreground ml-auto">{userIdeas.length} idea{userIdeas.length !== 1 ? "s" : ""}</span>
+              )}
+            </h2>
+            {!userIdeas ? (
+              <div className="flex items-center justify-center py-6">
+                <div className="size-5 border-2 border-amber-500/30 border-t-amber-500 rounded-full animate-spin" />
+              </div>
+            ) : userIdeas.length === 0 ? (
+              <div className="text-center py-6">
+                <div className="text-3xl mb-2">💡</div>
+                <p className="text-sm text-muted-foreground">No ideas shared yet.</p>
+                <p className="text-[10px] text-muted-foreground/60 font-mono mt-1">
+                  Click the 💡 button on any page to share your bright ideas!
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {userIdeas.map((idea) => (
+                  <div
+                    key={idea._id}
+                    className="rounded-xl border border-amber-500/10 bg-gradient-to-r from-amber-500/3 to-transparent p-4 hover:border-amber-500/20 transition-colors"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-wrap items-center gap-2 mb-2">
+                          <span className="px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/15 text-amber-400 text-[9px] font-mono font-medium">
+                            {idea.industry}
+                          </span>
+                          <span className="px-2 py-0.5 rounded-full bg-primary/10 border border-primary/15 text-primary text-[9px] font-mono font-medium">
+                            {idea.domain}
+                          </span>
+                          <span className="text-[9px] font-mono text-muted-foreground/60">
+                            {idea.process}
+                          </span>
+                        </div>
+                        <p className="text-sm leading-relaxed">{idea.idea}</p>
+                        <p className="text-[10px] font-mono text-muted-foreground/50 mt-2">
+                          {new Date(idea.createdAt).toLocaleDateString(undefined, {
+                            month: "short", day: "numeric", year: "numeric",
+                          })}{" "}
+                          <span className="text-muted-foreground/30">
+                            {new Date(idea.createdAt).toLocaleTimeString(undefined, {
+                              hour: "2-digit", minute: "2-digit",
+                            })}
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </FadeInView>
 
         {/* ═══════ RATING ═══════ */}
         <FadeInView direction="up" delay={0.25}>

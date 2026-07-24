@@ -9,6 +9,7 @@
  */
 
 import type * as authActions from "../authActions.js";
+import type * as ideas from "../ideas.js";
 import type * as likes from "../likes.js";
 import type * as pageVisits from "../pageVisits.js";
 import type * as ratings from "../ratings.js";
@@ -22,6 +23,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   authActions: typeof authActions;
+  ideas: typeof ideas;
   likes: typeof likes;
   pageVisits: typeof pageVisits;
   ratings: typeof ratings;

@@ -39,4 +39,16 @@ export default defineSchema({
     .index("by_email", ["email"])
     .index("by_page", ["page"])
     .index("by_date", ["visitedAt"]),
+
+  ideas: defineTable({
+    email: v.string(),
+    name: v.optional(v.string()),
+    industry: v.string(),
+    domain: v.string(),
+    process: v.string(),
+    idea: v.string(),
+    createdAt: v.number(),
+  })
+    .index("by_email", ["email"])
+    .index("by_date", ["createdAt"]),
 });

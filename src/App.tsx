@@ -4,6 +4,7 @@ import { PageTransition } from "./components/animations/index.ts";
 import { PageTracker } from "./components/analytics/index.ts";
 import { FloatingGameBar } from "./components/likes/index.ts";
 import { GlobalRatingButton } from "./components/ratings/index.ts";
+import { FloatingIdeaButton } from "./components/ideas/index.ts";
 import { DefaultProviders } from "./components/providers/default.tsx";
 import { useAuthContext } from "@/lib/auth/index.ts";
 import AuthCallback from "./pages/auth/Callback.tsx";
@@ -126,6 +127,7 @@ export default function App() {
         <PageTracker />
         <FloatingGameBar />
         <GlobalRatingButton />
+        <FloatingIdeaButton />
         <SignedOutGate>
           <PageShell>
             <Routes>
