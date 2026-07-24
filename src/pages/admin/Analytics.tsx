@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
 import { useAuthContext } from "@/lib/auth/index.ts";
@@ -37,8 +37,10 @@ export default function MasterAnalytics() {
   const ideaAnalytics = useQuery(api.analytics.getIdeaAnalytics, { adminEmail: email ?? "" });
   const ratingAnalytics = useQuery(api.analytics.getRatingAnalytics, { adminEmail: email ?? "" });
 
-  const now = Date.now();
-  const startDate = dateRange === "7d" ? now - 7 * 86400000 : dateRange === "30d" ? now - 30 * 86400000 : undefined;
+  const now = useMemo(() => Date.now(), [dateRange]);
+  const startDate = useMemo(() => 
+    dateRange === "7d" ? now - 7 * 86400000 : dateRange === "30d" ? now - 30 * 86400000 : undefined,
+  [dateRange, now]);
   const visitAnalytics = useQuery(api.analytics.getVisitAnalytics, {
     adminEmail: email ?? "",
     startDate,
@@ -214,25 +216,33 @@ export default function MasterAnalytics() {
 
             {visitTab === "pages" && (
               <div className="space-y-1.5 max-h-80 overflow-y-auto">
-                {visitAnalytics?.topPages?.map((p, i) => (
-                  <div key={p.page} className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted/20 transition-colors">
-                    <span className="text-[10px] font-mono text-muted-foreground w-5 text-right">{i + 1}.</span>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm truncate">{p.title}</p>
-                      <p className="text-[10px] font-mono text-muted-foreground/60">{p.page}</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="h-2 rounded-full bg-primary/30" style={{ width: `${Math.min(100, (p.count / Math.max(...visitAnalytics.topPages.map(x => x.count))) * 80)}px` }} />
-                      <span className="text-xs font-mono text-muted-foreground w-8 text-right">{p.count}</span>
-                    </div>
-                  </div>
-                ))}
+                {visitAnalytics?.topPages && visitAnalytics.topPages.length > 0 ? (
+                  visitAnalytics.topPages.map((p, i) => {
+                    const maxCount = Math.max(...visitAnalytics.topPages.map(x => x.count));
+                    return (
+                      <div key={p.page} className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted/20 transition-colors">
+                        <span className="text-[10px] font-mono text-muted-foreground w-5 text-right">{i + 1}.</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm truncate">{p.title}</p>
+                          <p className="text-[10px] font-mono text-muted-foreground/60">{p.page}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="h-2 rounded-full bg-primary/30" style={{ width: `${(p.count / maxCount) * 80}px` }} />
+                          <span className="text-xs font-mono text-muted-foreground w-8 text-right">{p.count}</span>
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <p className="text-sm text-muted-foreground py-4 text-center">No page data for this period</p>
+                )}
               </div>
             )}
 
             {visitTab === "users" && (
               <div className="space-y-1.5 max-h-80 overflow-y-auto">
-                {visitAnalytics?.topUsers?.map((u, i) => (
+                {visitAnalytics?.topUsers && visitAnalytics.topUsers.length > 0 ? (
+                  visitAnalytics.topUsers.map((u, i) => (
                   <div key={u.email} className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-muted/20 transition-colors">
                     <span className="text-[10px] font-mono text-muted-foreground w-5 text-right">{i + 1}.</span>
                     <div className="w-6 h-6 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white text-[9px] font-bold">
@@ -244,7 +254,9 @@ export default function MasterAnalytics() {
                     </div>
                     <span className="text-xs font-mono text-muted-foreground">{u.count} visits</span>
                   </div>
-                ))}
+                ))) : (
+                  <p className="text-sm text-muted-foreground py-4 text-center">No user data for this period</p>
+                )}
               </div>
             )}
           </div>
