@@ -12,7 +12,7 @@ export default function Simulations() {
       <NavBar />
 
       {/* ═══════ HERO ═══════ */}
-      <section className="relative px-4 pt-24 pb-12 overflow-hidden">
+      <section className="relative px-4 pt-12 pb-12 overflow-hidden">
         <div className="absolute inset-0 grid-bg opacity-40" />
         <div
           className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full blur-[120px] opacity-15 pointer-events-none"
@@ -95,7 +95,7 @@ export default function Simulations() {
       </section>
 
       {/* ═══════ SIMULATIONS GRID ═══════ */}
-      <section className="px-4 pb-24">
+      <section className="px-4 pb-12">
         <div className="max-w-6xl mx-auto">
           <div className="space-y-14">
             {CATEGORIES.map((cat, ci) => (

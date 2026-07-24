@@ -22,7 +22,7 @@ export default function Strategy() {
       <NavBar />
 
       {/* ═══════ HERO ═══════ */}
-      <section className="relative px-4 pt-24 pb-16 overflow-hidden">
+      <section className="relative px-4 pt-12 pb-16 overflow-hidden">
         <div className="absolute inset-0 grid-bg opacity-25" />
         <div
           className="absolute top-0 right-1/4 w-[400px] h-[400px] rounded-full blur-[140px] opacity-10 pointer-events-none"
@@ -220,7 +220,7 @@ export default function Strategy() {
       </section>
 
       {/* ═══════ FORWARD LOOK ═══════ */}
-      <section className="px-4 pb-24">
+      <section className="px-4 pb-12">
         <div className="max-w-6xl mx-auto">
           <FadeInView>
             <SectionPill>Looking Ahead</SectionPill>
@@ -250,7 +250,7 @@ export default function Strategy() {
       </section>
 
       {/* ═══════ CTA ═══════ */}
-      <section className="px-4 pb-24">
+      <section className="px-4 pb-12">
         <div className="max-w-6xl mx-auto">
           <FadeInView direction="up">
             <div className="rounded-2xl border border-amber-500/25 p-8 sm:p-12 text-center relative overflow-hidden" style={{ background: "linear-gradient(135deg, oklch(0.12 0.04 40), oklch(0.1 0.03 260))" }}>

@@ -20,7 +20,7 @@ export default function Learn() {
       <NavBar />
 
       {/* ═══════ HERO ═══════ */}
-      <section className="relative px-4 pt-24 pb-16 overflow-hidden">
+      <section className="relative px-4 pt-12 pb-16 overflow-hidden">
         <div className="absolute inset-0 grid-bg opacity-30" />
         <div
           className="absolute top-0 left-1/3 w-[500px] h-[500px] rounded-full blur-[140px] opacity-10 pointer-events-none"
@@ -299,7 +299,7 @@ export default function Learn() {
       </section>
 
       {/* ═══════ CTA ═══════ */}
-      <section className="px-4 pb-24">
+      <section className="px-4 pb-12">
         <div className="max-w-6xl mx-auto">
           <FadeInView direction="up">
             <div className="rounded-2xl border border-primary/30 p-8 sm:p-12 text-center relative overflow-hidden" style={{ background: "linear-gradient(135deg, oklch(0.1 0.04 240), oklch(0.12 0.05 260))" }}>

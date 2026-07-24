@@ -78,7 +78,7 @@ export default function Index() {
           </FadeInView>
 
           <FadeInView delay={0.8} direction="up">
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-4">
               <Link
                 to="/simulations"
                 className="group relative inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-primary text-primary-foreground font-semibold text-base transition-all duration-300 hover:scale-105 hover:shadow-[0_0_30px_oklch(0.72_0.22_200/0.4)]"
@@ -134,7 +134,7 @@ export default function Index() {
       </section>
 
       {/* ═══════ GATEWAY CARDS ═══════ */}
-      <section className="px-4 pb-24">
+      <section className="px-4 pb-12">
         <div className="max-w-6xl mx-auto">
           <FadeInView>
             <div className="text-center mb-12">
@@ -183,7 +183,7 @@ export default function Index() {
       </section>
 
       {/* ═══════ FEATURED SIMULATION ═══════ */}
-      <section className="px-4 pb-24">
+      <section className="px-4 pb-12">
         <div className="max-w-6xl mx-auto">
           <FadeInView>
             <div className="text-center mb-10">
@@ -240,7 +240,7 @@ export default function Index() {
       </section>
 
       {/* ═══════ CATEGORIES PREVIEW ═══════ */}
-      <section className="px-4 pb-24">
+      <section className="px-4 pb-12">
         <div className="max-w-6xl mx-auto">
           <FadeInView>
             <div className="text-center mb-12">
