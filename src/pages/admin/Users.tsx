@@ -46,7 +46,7 @@ export default function UserManagement() {
     return u.email.toLowerCase().includes(q) || (u.name && u.name.toLowerCase().includes(q));
   });
 
-  const handleEdit = (user: typeof allUsers[0]) => {
+  const handleEdit = (user: NonNullable<typeof allUsers>[number]) => {
     setEditingId(user._id);
     setEditName(user.name ?? "");
     setEditEmail(user.email);

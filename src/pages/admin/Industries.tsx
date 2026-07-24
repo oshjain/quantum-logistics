@@ -46,13 +46,13 @@ export default function IndustryDomainManager() {
   }
 
   const items = tab === "industries" ? (industries ?? []) : (domains ?? []);
-  const addFn = tab === "industries" ? addIndustry : addDomain;
-  const updateFn = tab === "industries" ? updateIndustry : updateDomain;
-  const deleteFn = tab === "industries" ? deleteIndustry : deleteDomain;
-
   const handleAdd = async () => {
     if (!newName.trim()) return;
-    await addFn({ adminEmail: email, name: newName.trim() });
+    if (tab === "industries") {
+      await addIndustry({ adminEmail: email, name: newName.trim() });
+    } else {
+      await addDomain({ adminEmail: email, name: newName.trim() });
+    }
     setNewName("");
     setAdding(false);
   };
@@ -64,12 +64,20 @@ export default function IndustryDomainManager() {
 
   const handleSaveEdit = async () => {
     if (!editingId || !editName.trim()) return;
-    await updateFn({ adminEmail: email, [tab === "industries" ? "industryId" : "domainId"]: editingId as any, name: editName.trim() });
+    if (tab === "industries") {
+      await updateIndustry({ adminEmail: email, industryId: editingId as any, name: editName.trim() });
+    } else {
+      await updateDomain({ adminEmail: email, domainId: editingId as any, name: editName.trim() });
+    }
     setEditingId(null);
   };
 
   const handleDelete = async (id: string) => {
-    await deleteFn({ adminEmail: email, [tab === "industries" ? "industryId" : "domainId"]: id as any });
+    if (tab === "industries") {
+      await deleteIndustry({ adminEmail: email, industryId: id as any });
+    } else {
+      await deleteDomain({ adminEmail: email, domainId: id as any });
+    }
     setDeleteConfirm(null);
   };
 
