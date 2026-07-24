@@ -51,4 +51,20 @@ export default defineSchema({
   })
     .index("by_email", ["email"])
     .index("by_date", ["createdAt"]),
+
+  industries: defineTable({
+    name: v.string(),
+    order: v.number(),
+    createdAt: v.number(),
+  })
+    .index("by_name", ["name"])
+    .index("by_order", ["order"]),
+
+  domains: defineTable({
+    name: v.string(),
+    order: v.number(),
+    createdAt: v.number(),
+  })
+    .index("by_name", ["name"])
+    .index("by_order", ["order"]),
 });

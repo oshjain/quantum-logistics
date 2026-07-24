@@ -14,6 +14,9 @@ import Learn from "./pages/Learn.tsx";
 import Strategy from "./pages/Strategy.tsx";
 import MyStats from "./pages/MyStats.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import UserManagement from "./pages/admin/Users.tsx";
+import IndustryDomainManager from "./pages/admin/Industries.tsx";
+import MasterAnalytics from "./pages/admin/Analytics.tsx";
 import BB84Page from "./pages/bb84/page.tsx";
 import GroversPage from "./pages/grovers/page.tsx";
 import DeliveryPage from "./pages/delivery/page.tsx";
@@ -151,6 +154,9 @@ export default function App() {
               <Route path="/uld-loading" element={<ULDPage />} />
               <Route path="/flight-capacity" element={<FlightCapacityPage />} />
               <Route path="/quantum-shipment" element={<QuantumShipmentPage />} />
+              <Route path="/admin/users" element={<PageTransition><UserManagement /></PageTransition>} />
+              <Route path="/admin/industries" element={<PageTransition><IndustryDomainManager /></PageTransition>} />
+              <Route path="/admin/analytics" element={<PageTransition><MasterAnalytics /></PageTransition>} />
               <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

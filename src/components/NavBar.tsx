@@ -2,7 +2,9 @@ import { Link, useLocation } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils.ts";
 import { useAuthContext } from "@/lib/auth/index.ts";
-import { Menu, X } from "lucide-react";
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api.js";
+import { Menu, X, Shield, ShieldCheck, BarChart3 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "@/components/ui/sheet.tsx";
 
 const navItems = [
@@ -44,6 +46,11 @@ const SIMULATION_GROUPS = [
 function MobileNav() {
   const location = useLocation();
   const [open, setOpen] = useState(false);
+  const { email } = useAuthContext();
+  const currentUser = useQuery(api.users.getUserByEmail, { email: email ?? "" });
+  const role = currentUser?.role;
+  const isAdmin = role === "Admin" || role === "Super Admin";
+  const isSuperAdmin = role === "Super Admin";
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -87,6 +94,60 @@ function MobileNav() {
               {item.label}
             </Link>
           ))}
+
+          {/* Admin section */}
+          {isAdmin && (
+            <>
+              <div className="pt-4 pb-1">
+                <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider px-3 pb-1">
+                  🔐 Admin
+                </p>
+                <Link
+                  to="/admin/analytics"
+                  onClick={() => setOpen(false)}
+                  className={cn(
+                    "flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+                    location.pathname === "/admin/analytics"
+                      ? "bg-primary/15 text-primary"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                  )}
+                >
+                  <BarChart3 className="size-4 mr-2" />
+                  Master Analytics
+                </Link>
+                {isSuperAdmin && (
+                  <>
+                    <Link
+                      to="/admin/users"
+                      onClick={() => setOpen(false)}
+                      className={cn(
+                        "flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+                        location.pathname === "/admin/users"
+                          ? "bg-purple-500/15 text-purple-400"
+                          : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                      )}
+                    >
+                      <ShieldCheck className="size-4 mr-2" />
+                      User Management
+                    </Link>
+                    <Link
+                      to="/admin/industries"
+                      onClick={() => setOpen(false)}
+                      className={cn(
+                        "flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+                        location.pathname === "/admin/industries"
+                          ? "bg-purple-500/15 text-purple-400"
+                          : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                      )}
+                    >
+                      <Shield className="size-4 mr-2" />
+                      Industry & Domains
+                    </Link>
+                  </>
+                )}
+              </div>
+            </>
+          )}
 
           {/* Simulations section header */}
           <div className="pt-4 pb-1">
@@ -219,6 +280,10 @@ function DesktopNav() {
 export default function NavBar() {
   const location = useLocation();
   const { email } = useAuthContext();
+  const currentUser = useQuery(api.users.getUserByEmail, { email: email ?? "" });
+  const role = currentUser?.role;
+  const isAdmin = role === "Admin" || role === "Super Admin";
+  const isSuperAdmin = role === "Super Admin";
 
   return (
     <header className="border-b border-border/50 bg-background/90 backdrop-blur-sm sticky top-0 z-50">
@@ -239,6 +304,53 @@ export default function NavBar() {
         {/* Desktop navigation */}
         <div className="hidden sm:flex items-center gap-1">
           <DesktopNav />
+
+          {/* Admin links */}
+          {isAdmin && (
+            <>
+              <div className="w-px h-5 bg-border/50 mx-1" />
+              <Link
+                to="/admin/analytics"
+                className={cn(
+                  "px-3 py-1.5 rounded-md text-sm font-medium transition-colors whitespace-nowrap flex items-center gap-1",
+                  location.pathname === "/admin/analytics"
+                    ? "bg-primary/15 text-primary"
+                    : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                )}
+              >
+                <BarChart3 className="size-3.5" />
+                Analytics
+              </Link>
+              {isSuperAdmin && (
+                <>
+                  <Link
+                    to="/admin/users"
+                    className={cn(
+                      "px-3 py-1.5 rounded-md text-sm font-medium transition-colors whitespace-nowrap flex items-center gap-1",
+                      location.pathname === "/admin/users"
+                        ? "bg-purple-500/15 text-purple-400"
+                        : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                    )}
+                  >
+                    <ShieldCheck className="size-3.5" />
+                    Users
+                  </Link>
+                  <Link
+                    to="/admin/industries"
+                    className={cn(
+                      "px-3 py-1.5 rounded-md text-sm font-medium transition-colors whitespace-nowrap flex items-center gap-1",
+                      location.pathname === "/admin/industries"
+                        ? "bg-purple-500/15 text-purple-400"
+                        : "text-muted-foreground hover:text-foreground hover:bg-secondary"
+                    )}
+                  >
+                    <Shield className="size-3.5" />
+                    Lists
+                  </Link>
+                </>
+              )}
+            </>
+          )}
         </div>
 
         {/* My Stats + User — always visible */}
