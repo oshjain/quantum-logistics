@@ -123,11 +123,11 @@ export function IdeaModal() {
     <>
       {/* ──────── FLOATING TRIGGER BUTTON ──────── */}
       <div className="fixed bottom-4 left-4 sm:left-6 z-50 flex flex-col items-start gap-2">
-        {/* Tooltip */}
+        {/* Tooltip - desktop only */}
         <AnimatePresence>
           {tooltipVisible && (
             <motion.div
-              className="relative"
+              className="relative hidden sm:block"
               initial={{ opacity: 0, x: -20, scale: 0.9 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: -20, scale: 0.9 }}
@@ -144,10 +144,42 @@ export function IdeaModal() {
           )}
         </AnimatePresence>
 
-        {/* Floating Button */}
+        {/* ── Mobile: Compact FAB (icon only) ── */}
         <motion.button
           onClick={openModal}
-          className="relative group"
+          className="relative group sm:hidden"
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.85 }}
+          animate={{
+            boxShadow: [
+              "0 0 0 0 rgba(251, 191, 36, 0.4)",
+              "0 0 0 12px rgba(251, 191, 36, 0)",
+              "0 0 0 0 rgba(251, 191, 36, 0)",
+            ],
+          }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-amber-400 to-orange-500 blur-xl opacity-40 group-hover:opacity-60 transition-opacity" />
+          <div className="relative flex items-center justify-center size-12 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/30 overflow-hidden">
+            <motion.div
+              className="absolute inset-0 opacity-20"
+              animate={{ x: ["-100%", "200%"] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
+              style={{ background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)" }}
+            />
+            <motion.div
+              animate={{ rotate: [0, -8, 8, -8, 0], scale: [1, 1.15, 1] }}
+              transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
+            >
+              <Lightbulb className="size-6" />
+            </motion.div>
+          </div>
+        </motion.button>
+
+        {/* ── Desktop: Full button with text ── */}
+        <motion.button
+          onClick={openModal}
+          className="relative group hidden sm:flex"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           animate={{
