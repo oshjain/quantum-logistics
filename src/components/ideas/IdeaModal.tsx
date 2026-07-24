@@ -1,53 +1,9 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { useMutation } from "convex/react";
+import { useMutation, useQuery } from "convex/react";
 import { api } from "@/convex/_generated/api.js";
 import { useAuthContext } from "@/lib/auth/index.ts";
 import { Lightbulb, Sparkles, Send, X } from "lucide-react";
-
-const INDUSTRIES = [
-  "Logistics & Supply Chain",
-  "Manufacturing",
-  "Healthcare",
-  "Finance & Banking",
-  "Insurance",
-  "Retail & E-commerce",
-  "Travel & Hospitality",
-  "Technology",
-  "Telecommunications",
-  "Energy & Utilities",
-  "Pharmaceuticals",
-  "Automotive",
-  "Aerospace & Defense",
-  "Other",
-];
-
-const DOMAINS = [
-  "Back Office Operations",
-  "Front Office Operations",
-  "Finance & Accounting",
-  "Shipping & Maritime",
-  "Vessel Operations",
-  "Trucking & Freight",
-  "Air Cargo",
-  "Freight Forwarding",
-  "Port & Terminals",
-  "Ground Force / Ramp Operations",
-  "Warehousing & Distribution",
-  "Supply Chain Planning",
-  "Procurement & Sourcing",
-  "Customer Experience",
-  "Data, Analytics & AI",
-  "Digital Transformation",
-  "Operations Excellence",
-  "Sustainability / ESG",
-  "Risk & Compliance",
-  "Information Technology",
-  "Sales & Marketing",
-  "Human Resources",
-  "Legal & Contracts",
-  "Other",
-];
 
 export function IdeaModal() {
   const { email, name } = useAuthContext();
@@ -65,7 +21,13 @@ export function IdeaModal() {
 
   const submitIdea = useMutation(api.ideas.submitIdea);
 
+  const industriesData = useQuery(api.industries.getAllIndustries);
+  const domainsData = useQuery(api.industries.getAllDomains);
+
   if (!email) return null;
+
+  const INDUSTRIES = (industriesData ?? []).map((i) => i.name);
+  const DOMAINS = (domainsData ?? []).map((d) => d.name);
 
   const filteredIndustries = INDUSTRIES.filter((i) =>
     i.toLowerCase().includes(industrySearch.toLowerCase()),

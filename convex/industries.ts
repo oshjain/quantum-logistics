@@ -139,3 +139,88 @@ export const deleteDomain = mutation({
     await ctx.db.delete(args.domainId);
   },
 });
+
+/* ─── Seed initial data ────────────────────────────────────────── */
+
+const DEFAULT_INDUSTRIES = [
+  "Logistics & Supply Chain",
+  "Manufacturing",
+  "Healthcare",
+  "Finance & Banking",
+  "Insurance",
+  "Retail & E-commerce",
+  "Travel & Hospitality",
+  "Technology",
+  "Telecommunications",
+  "Energy & Utilities",
+  "Pharmaceuticals",
+  "Automotive",
+  "Aerospace & Defense",
+  "Other",
+];
+
+const DEFAULT_DOMAINS = [
+  "Back Office Operations",
+  "Front Office Operations",
+  "Finance & Accounting",
+  "Shipping & Maritime",
+  "Vessel Operations",
+  "Trucking & Freight",
+  "Air Cargo",
+  "Freight Forwarding",
+  "Port & Terminals",
+  "Ground Force / Ramp Operations",
+  "Warehousing & Distribution",
+  "Supply Chain Planning",
+  "Procurement & Sourcing",
+  "Customer Experience",
+  "Data, Analytics & AI",
+  "Digital Transformation",
+  "Operations Excellence",
+  "Sustainability / ESG",
+  "Risk & Compliance",
+  "Information Technology",
+  "Sales & Marketing",
+  "Human Resources",
+  "Legal & Contracts",
+  "Other",
+];
+
+export const seedLists = mutation({
+  args: {
+    adminEmail: v.string(),
+  },
+  handler: async (ctx, args) => {
+    await assertSuperAdmin(ctx, args.adminEmail);
+
+    const existingIndustries = await ctx.db.query("industries").collect();
+    const existingDomains = await ctx.db.query("domains").collect();
+
+    const now = Date.now();
+
+    if (existingIndustries.length === 0) {
+      for (let i = 0; i < DEFAULT_INDUSTRIES.length; i++) {
+        await ctx.db.insert("industries", {
+          name: DEFAULT_INDUSTRIES[i],
+          order: i,
+          createdAt: now,
+        });
+      }
+    }
+
+    if (existingDomains.length === 0) {
+      for (let i = 0; i < DEFAULT_DOMAINS.length; i++) {
+        await ctx.db.insert("domains", {
+          name: DEFAULT_DOMAINS[i],
+          order: i,
+          createdAt: now,
+        });
+      }
+    }
+
+    return {
+      industriesSeeded: existingIndustries.length === 0,
+      domainsSeeded: existingDomains.length === 0,
+    };
+  },
+});
