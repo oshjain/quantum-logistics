@@ -1,6 +1,4 @@
 import { useConvexAuth } from "convex/react";
-import { useQuery } from "convex/react";
-import { api } from "@/convex/_generated/api.js";
 
 export function useAuth() {
   const { isAuthenticated, isLoading } = useConvexAuth();
@@ -29,10 +27,4 @@ export function useAuth() {
   };
 
   return { isAuthenticated, isLoading, signIn, signOut };
-}
-
-export function useUser() {
-  const { isAuthenticated } = useConvexAuth();
-  const user = useQuery(api.users.getCurrentUser);
-  return isAuthenticated ? user : null;
 }

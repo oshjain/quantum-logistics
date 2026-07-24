@@ -1,52 +1,59 @@
-import { ConvexError } from "convex/values";
+import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 
-export const updateCurrentUser = mutation({
-  args: {},
-  handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new ConvexError({
-        code: "UNAUTHENTICATED",
-        message: "User not logged in",
-      });
+const ADMIN_EMAIL = "u306076@wns.com";
+const ADMIN_NAME = "Hasmukh Jain";
+
+/**
+ * Upsert a user by email when they log in.
+ * - If the user doesn't exist, create them with role "Viewer"
+ *   (or "Admin" for the designated admin).
+ * - If the user exists, update their name in case it changed.
+ */
+export const upsertUser = mutation({
+  args: {
+    email: v.string(),
+    name: v.optional(v.string()),
+  },
+  handler: async (ctx, args) => {
+    const { email, name } = args;
+
+    const existing = await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", email))
+      .unique();
+
+    if (existing) {
+      // Update name if provided and different
+      if (name && name !== existing.name) {
+        await ctx.db.patch(existing._id, { name });
+      }
+      return existing._id;
     }
 
-    // Check if we've already stored this identity before.
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier),
-      )
-      .unique();
-    if (user !== null) {
-      return user._id;
-    }
-    // If it's a new identity, create a new User.
+    // New user — assign role
+    const role = email === ADMIN_EMAIL ? "Admin" : "Viewer";
+
     return await ctx.db.insert("users", {
-      name: identity.name,
-      email: identity.email,
-      tokenIdentifier: identity.tokenIdentifier,
+      email,
+      name: name ?? email,
+      role,
+      createdAt: Date.now(),
     });
   },
 });
 
-export const getCurrentUser = query({
-  args: {},
-  handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) {
-      throw new ConvexError({
-        code: "UNAUTHENTICATED",
-        message: "Called getCurrentUser without authentication present",
-      });
-    }
-    const user = await ctx.db
+/**
+ * Get a user by email.
+ */
+export const getUserByEmail = query({
+  args: {
+    email: v.string(),
+  },
+  handler: async (ctx, args) => {
+    return await ctx.db
       .query("users")
-      .withIndex("by_token", (q) =>
-        q.eq("tokenIdentifier", identity.tokenIdentifier),
-      )
+      .withIndex("by_email", (q) => q.eq("email", args.email))
       .unique();
-    return user;
   },
 });

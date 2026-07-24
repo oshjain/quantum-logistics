@@ -3,10 +3,11 @@ import { v } from "convex/values";
 
 export default defineSchema({
   users: defineTable({
-    tokenIdentifier: v.string(),
+    email: v.string(),
     name: v.optional(v.string()),
-    email: v.optional(v.string()),
-  }).index("by_token", ["tokenIdentifier"]),
+    role: v.string(),         // "Admin" | "Viewer"
+    createdAt: v.number(),
+  }).index("by_email", ["email"]),
 
   likes: defineTable({
     email: v.string(),

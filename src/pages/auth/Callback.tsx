@@ -5,10 +5,15 @@ import { api } from "@/convex/_generated/api.js";
 import { Spinner } from "@/components/ui/spinner.tsx";
 import { Button } from "@/components/ui/button.tsx";
 
+/**
+ * Callback for Convex OIDC auth (legacy — app now uses MSAL).
+ * Kept as a landing page for /auth/callback redirects.
+ * After Convex auth completes, navigates home. User creation
+ * is handled by AuthProvider (MSAL flow).
+ */
 export default function AuthCallback() {
   const navigate = useNavigate();
   const { isAuthenticated, isLoading } = useConvexAuth();
-  const updateCurrentUser = useMutation(api.users.updateCurrentUser);
 
   const navigateHome = useCallback(
     () => navigate("/", { replace: true }),
@@ -17,11 +22,9 @@ export default function AuthCallback() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      updateCurrentUser()
-        .then(() => navigateHome())
-        .catch(console.error);
+      navigateHome();
     }
-  }, [isAuthenticated, updateCurrentUser, navigateHome]);
+  }, [isAuthenticated, navigateHome]);
 
   if (isLoading) {
     return (

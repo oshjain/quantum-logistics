@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { msalInstance, CLIENT_ID, LOGIN_SCOPES } from "./config.ts";
+import { convexClient } from "@/components/providers/convex.tsx";
+import { api } from "@/convex/_generated/api.js";
 
 /* ─── Types ────────────────────────────────────────────────────── */
 interface AuthContextValue {
@@ -52,6 +54,15 @@ function clearAppLocalCache() {
   keysToRemove.forEach((key) => localStorage.removeItem(key));
 }
 
+/* ─── Record user in Convex users table (fire-and-forget) ────── */
+async function recordUser(email: string, name: string) {
+  try {
+    await convexClient.mutation(api.users.upsertUser, { email, name });
+  } catch (err) {
+    console.error("[Auth] Failed to upsert user in Convex:", err);
+  }
+}
+
 /* ─── AuthProvider ──────────────────────────────────────────────── */
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [email, setEmail] = useState<string | null>(null);
@@ -76,6 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (user.email) {
             setEmail(user.email);
             setName(user.name);
+            recordUser(user.email, user.name);
             sessionStorage.setItem("quantum_auth_user", JSON.stringify({
               email: user.email,
               name: user.name,
@@ -93,6 +105,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (user.expiresAt > Date.now()) {
             setEmail(user.email);
             setName(user.name);
+            recordUser(user.email, user.name);
             setLoading(false);
             return;
           }
@@ -125,6 +138,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               if (user.email) {
                 setEmail(user.email);
                 setName(user.name);
+                recordUser(user.email, user.name);
                 sessionStorage.setItem("quantum_auth_user", JSON.stringify({
                   email: user.email,
                   name: user.name,
