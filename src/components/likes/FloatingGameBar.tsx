@@ -90,8 +90,8 @@ export function FloatingGameBar() {
         exit={{ y: 60, opacity: 0 }}
         className="fixed bottom-0 left-0 right-0 z-50 pointer-events-none"
       >
-        <div className="pointer-events-auto mx-auto max-w-2xl px-4 pb-4">
-          <div className="rounded-2xl border border-border/50 bg-card/95 backdrop-blur-xl shadow-2xl px-5 py-4 flex flex-wrap items-center gap-5">
+        <div className="pointer-events-auto mx-auto max-w-2xl px-2 sm:px-4 pb-2 sm:pb-4">
+          <div className="rounded-2xl border border-border/50 bg-card/95 backdrop-blur-xl shadow-2xl px-3 sm:px-5 py-3 sm:py-4 flex flex-wrap items-center gap-3 sm:gap-5">
             {/* Game title */}
             <span className="text-sm font-semibold text-muted-foreground hidden sm:block truncate max-w-[160px]">
               {gameTitle}
@@ -112,7 +112,7 @@ export function FloatingGameBar() {
             {/* Dislike */}
             <button
               onClick={() => setShowFeedback(!showFeedback)}
-              className={`transition-all duration-200 hover:scale-110 active:scale-90 text-2xl ${
+              className={`transition-all duration-200 hover:scale-110 active:scale-90 text-xl sm:text-2xl ${
                 isGameDisliked ? "text-amber-400" : "text-muted-foreground"
               }`}
               title="Dislike"
@@ -124,7 +124,10 @@ export function FloatingGameBar() {
             {topicName && topicLikes && (
               <>
                 <div className="h-7 w-px bg-border/50" />
-                <span className="text-xs text-muted-foreground font-mono">{topicName}</span>
+                <span className="text-[10px] sm:text-xs text-muted-foreground font-mono hidden sm:inline">{topicName}</span>
+                <span className="text-[10px] sm:text-xs text-muted-foreground font-mono sm:hidden" title={topicName}>
+                  {topicName.length > 8 ? topicName.slice(0, 8) + "…" : topicName}
+                </span>
                 <HeartButton
                   count={topicLikes.likeCount}
                   isLiked={isTopicLiked}
