@@ -107,13 +107,13 @@ function MobileNav() {
                   onClick={() => setOpen(false)}
                   className={cn(
                     "flex items-center px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
-                    location.pathname === "/admin/analytics"
+                    location.pathname.startsWith("/admin/analytics")
                       ? "bg-primary/15 text-primary"
                       : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                   )}
                 >
                   <BarChart3 className="size-4 mr-2" />
-                  Master Analytics
+                  Analytics
                 </Link>
                 {isSuperAdmin && (
                   <>
@@ -313,7 +313,7 @@ export default function NavBar() {
                 to="/admin/analytics"
                 className={cn(
                   "px-3 py-1.5 rounded-md text-sm font-medium transition-colors whitespace-nowrap flex items-center gap-1",
-                  location.pathname === "/admin/analytics"
+                  location.pathname.startsWith("/admin/analytics")
                     ? "bg-primary/15 text-primary"
                     : "text-muted-foreground hover:text-foreground hover:bg-secondary"
                 )}

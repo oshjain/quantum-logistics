@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Getting Started — WNS Quantum Lab</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Manrope', 'system-ui', 'sans-serif'],
+            display: ['Space Grotesk', 'Manrope', 'system-ui', 'sans-serif']
+          },
+          colors: {
+            ink: '#061114',
+            paper: '#f6f3e9',
+            limehot: '#b8ff3d',
+            skyhot: '#60d7ff',
+            rosehot: '#ff8aa0'
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    @media (min-width: 1024px) {
+      html, body { height: 100%; overflow: hidden; }
+      body { height: 100svh; }
+    }
+    @media (max-width: 1023px) {
+      html, body { min-height: 100%; overflow-x: hidden; }
+      body { min-height: 100svh; }
+    }
+  </style>
+</head>
+<body class="font-sans bg-[#071314] text-paper antialiased selection:bg-limehot selection:text-ink">
+  <main class="relative min-h-svh lg:h-svh lg:overflow-hidden bg-[radial-gradient(circle_at_12%_18%,rgba(184,255,61,.14),transparent_26%),radial-gradient(circle_at_90%_12%,rgba(96,215,255,.12),transparent_28%),linear-gradient(135deg,#071314_0%,#0b1917_45%,#080f13_100%)] px-4 py-4 sm:px-6 lg:p-4 xl:p-5">
+    <div class="pointer-events-none absolute inset-0 opacity-[.10] [background-image:linear-gradient(rgba(255,255,255,.5)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.5)_1px,transparent_1px)] [background-size:56px_56px]"></div>
+
+    <section class="relative mx-auto flex min-h-[calc(100svh-32px)] w-full max-w-[1500px] flex-col gap-4 lg:gap-3 lg:h-[calc(100svh-40px)] lg:min-h-0 xl:h-[calc(100svh-48px)]">
+      <header class="flex h-11 shrink-0 items-center justify-between rounded-2xl border border-white/10 bg-white/[.055] px-4 shadow-[0_18px_60px_rgba(0,0,0,.22)] backdrop-blur-xl sm:px-5">
+        <p class="truncate text-[10px] font-extrabold uppercase tracking-[.28em] text-limehot sm:text-xs">
+          WNS - Distribution and Logistics · part of capgemini
+        </p>
+        <p class="hidden rounded-full border border-white/10 bg-black/25 px-3 py-1 text-[10px] font-extrabold uppercase tracking-[.22em] text-white/65 sm:block">
+          WNS Quantum Lab
+        </p>
+      </header>
+
+      <section class="grid shrink-0 gap-4 lg:h-[166px] lg:grid-cols-[minmax(0,1.15fr)_minmax(315px,.55fr)] xl:h-[166px] xl:grid-cols-[minmax(0,1.2fr)_minmax(360px,.52fr)]">
+        <div class="grid overflow-hidden rounded-[1.45rem] border border-white/12 bg-paper text-ink shadow-[0_24px_80px_rgba(0,0,0,.26)] lg:grid-cols-[minmax(0,1.42fr)_minmax(260px,.68fr)]">
+          <div class="flex min-w-0 items-center px-5 py-5 sm:px-7 lg:px-5 lg:py-3">
+            <h1 class="font-display text-[clamp(2.6rem,10vw,4.4rem)] font-bold leading-[.9] tracking-[-.07em] lg:text-[clamp(2.95rem,3.8vw,4.25rem)] xl:text-[clamp(3.15rem,3.9vw,4.7rem)]">
+              Quantum Computing<br /><span class="text-limehot drop-shadow-[0_8px_18px_rgba(184,255,61,.28)]">for Logistics</span>
+            </h1>
+          </div>
+          <div class="flex items-center border-t border-ink/10 px-5 pb-6 sm:px-7 lg:border-l lg:border-t-0 lg:px-5 lg:py-3">
+            <p class="max-w-[44rem] text-base font-semibold leading-snug text-ink/70 lg:text-[.86rem] xl:text-[.94rem]">
+              A <strong class="font-extrabold text-ink">hands-on introduction to future technologies via a simulation based platform</strong> — no PhD required. Learn quantum concepts, explore strategy, and simulate real algorithms built for distribution and logistics.
+            </p>
+          </div>
+        </div>
+
+        <a href="https://quantum.shipping-wns.app/" class="group flex min-h-24 items-center justify-between gap-5 rounded-[1.45rem] border border-limehot/60 bg-limehot p-3 text-ink shadow-[0_24px_80px_rgba(184,255,61,.18)] transition hover:-translate-y-0.5 hover:shadow-[0_28px_90px_rgba(184,255,61,.28)] active:translate-y-0 lg:min-h-0 lg:p-3">
+          <div class="min-w-0 rounded-[1.25rem] bg-ink px-5 py-3 text-paper lg:w-full lg:px-5">
+            <p class="font-display text-3xl font-bold leading-[.95] tracking-[-.06em] lg:text-[1.45rem] xl:text-[1.7rem]">Launch the<br />Platform</p>
+            <p class="mt-1.5 text-[10px] font-extrabold uppercase leading-tight tracking-[.28em] text-limehot sm:text-xs">enterprise login via instasafe</p>
+          </div>
+          <div class="grid size-14 shrink-0 place-items-center rounded-full bg-ink text-limehot transition group-hover:rotate-45 lg:size-14">
+            <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M9 7h8v8"/></svg>
+          </div>
+        </a>
+      </section>
+
+      <section class="grid flex-1 gap-3 lg:min-h-0 lg:grid-cols-3">
+        <article class="flex min-h-[300px] flex-col rounded-[1.45rem] border border-limehot/25 bg-[#10241f]/88 p-4 shadow-[0_22px_70px_rgba(0,0,0,.22)] backdrop-blur-xl lg:min-h-0 lg:p-3 xl:p-4">
+          <div class="mb-3 flex items-center gap-3 lg:mb-2">
+            <span class="h-8 w-1 rounded-full bg-limehot"></span>
+            <h2 class="text-xs font-extrabold uppercase tracking-[.32em] text-limehot sm:text-sm">What You Can Do</h2>
+          </div>
+          <div class="grid flex-1 gap-3 lg:min-h-0 lg:grid-rows-3 lg:gap-2">
+            <div class="grid grid-cols-[50px_minmax(0,1fr)] min-h-0 items-center gap-3 rounded-2xl border border-white/10 bg-black/20 p-3 lg:p-2 xl:p-2.5">
+              <div class="grid size-10 lg:size-9 xl:size-10 place-items-center rounded-2xl bg-limehot text-ink shadow-[0_12px_35px_rgba(184,255,61,.18)]">
+                <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.5A2.5 2.5 0 0 1 7.5 2H19v17H7.5A2.5 2.5 0 0 0 5 21.5z"/><path d="M5 4.5v17"/><path d="M9 7h6"/><path d="M9 11h6"/></svg>
+              </div>
+              <div class="min-w-0">
+                <h3 class="text-base font-extrabold leading-tight text-white lg:text-[.86rem] xl:text-[.94rem]">Learn the Concepts</h3>
+                <p class="mt-1 text-sm font-semibold leading-snug text-white/70 lg:text-[.70rem] xl:text-[.78rem]">Quantum fundamentals explained through logistics analogies.</p>
+              </div>
+            </div>
+            <div class="grid grid-cols-[50px_minmax(0,1fr)] min-h-0 items-center gap-3 rounded-2xl border border-white/10 bg-black/20 p-3 lg:p-2 xl:p-2.5">
+              <div class="grid size-10 lg:size-9 xl:size-10 place-items-center rounded-2xl bg-limehot text-ink shadow-[0_12px_35px_rgba(184,255,61,.18)]">
+                <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16v-5"/><path d="M12 16V8"/><path d="M16 16v-8"/></svg>
+              </div>
+              <div class="min-w-0">
+                <h3 class="text-base font-extrabold leading-tight text-white lg:text-[.86rem] xl:text-[.94rem]">Understand Strategy</h3>
+                <p class="mt-1 text-sm font-semibold leading-snug text-white/70 lg:text-[.70rem] xl:text-[.78rem]">Business case, adoption roadmap, competitive landscape.</p>
+              </div>
+            </div>
+            <div class="grid grid-cols-[50px_minmax(0,1fr)] min-h-0 items-center gap-3 rounded-2xl border border-white/10 bg-black/20 p-3 lg:p-2 xl:p-2.5">
+              <div class="grid size-10 lg:size-9 xl:size-10 place-items-center rounded-2xl bg-limehot text-ink shadow-[0_12px_35px_rgba(184,255,61,.18)]">
+                <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 12h4"/><path d="M8 10v4"/><path d="M15 13h.01"/><path d="M18 11h.01"/><rect x="3" y="7" width="18" height="10" rx="3"/></svg>
+              </div>
+              <div class="min-w-0">
+                <h3 class="text-base font-extrabold leading-tight text-white lg:text-[.86rem] xl:text-[.94rem]">Run Simulations</h3>
+                <p class="mt-1 text-sm font-semibold leading-snug text-white/70 lg:text-[.70rem] xl:text-[.78rem]">16 interactive puzzles — real logistics, real algorithms.</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="flex min-h-[300px] flex-col rounded-[1.45rem] border border-skyhot/25 bg-[#102029]/88 p-4 shadow-[0_22px_70px_rgba(0,0,0,.22)] backdrop-blur-xl lg:min-h-0 lg:p-3 xl:p-4">
+          <div class="mb-3 flex items-center gap-3 lg:mb-2">
+            <span class="h-8 w-1 rounded-full bg-skyhot"></span>
+            <h2 class="text-xs font-extrabold uppercase tracking-[.28em] text-skyhot sm:text-sm">How to Play a Simulation</h2>
+          </div>
+          <div class="grid flex-1 gap-3 lg:min-h-0 lg:grid-rows-3 lg:gap-2">
+            <div class="grid grid-cols-[50px_minmax(0,1fr)] min-h-0 items-center gap-3 rounded-2xl border border-white/10 bg-black/20 p-3 lg:p-2 xl:p-2.5">
+              <div class="grid size-10 lg:size-9 xl:size-10 place-items-center rounded-2xl border border-skyhot/60 bg-skyhot/10 font-display text-lg font-bold text-skyhot">1</div>
+              <p class="text-base font-extrabold leading-snug text-white lg:text-[.80rem] xl:text-[.9rem]">Pick a puzzle from your industry.</p>
+            </div>
+            <div class="grid grid-cols-[50px_minmax(0,1fr)] min-h-0 items-center gap-3 rounded-2xl border border-white/10 bg-black/20 p-3 lg:p-2 xl:p-2.5">
+              <div class="grid size-10 lg:size-9 xl:size-10 place-items-center rounded-2xl border border-skyhot/60 bg-skyhot/10 font-display text-lg font-bold text-skyhot">2</div>
+              <p class="text-base font-extrabold leading-snug text-white lg:text-[.80rem] xl:text-[.9rem]">Solve it manually — drag, click, arrange.</p>
+            </div>
+            <div class="grid grid-cols-[50px_minmax(0,1fr)] min-h-0 items-center gap-3 rounded-2xl border border-white/10 bg-black/20 p-3 lg:p-2 xl:p-2.5">
+              <div class="grid size-10 lg:size-9 xl:size-10 place-items-center rounded-2xl border border-skyhot/60 bg-skyhot/10 font-display text-lg font-bold text-skyhot">3</div>
+              <p class="text-base font-extrabold leading-snug text-white lg:text-[.80rem] xl:text-[.9rem]">Use <strong class="text-skyhot">Smart Helper</strong> to reveal the optimal solution.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="flex min-h-[300px] flex-col rounded-[1.45rem] border border-rosehot/25 bg-[#281d22]/88 p-4 shadow-[0_22px_70px_rgba(0,0,0,.22)] backdrop-blur-xl lg:min-h-0 lg:p-3 xl:p-4">
+          <div class="mb-3 flex items-center gap-3 lg:mb-2">
+            <span class="h-8 w-1 rounded-full bg-rosehot"></span>
+            <h2 class="text-xs font-extrabold uppercase tracking-[.32em] text-rosehot sm:text-sm">Shape the Platform</h2>
+          </div>
+          <div class="grid flex-1 gap-3 lg:min-h-0 lg:grid-rows-3 lg:gap-2">
+            <div class="grid grid-cols-[50px_minmax(0,1fr)] min-h-0 items-center gap-3 rounded-2xl border border-white/10 bg-black/20 p-3 lg:p-2 xl:p-2.5">
+              <div class="grid size-10 lg:size-9 xl:size-10 place-items-center rounded-2xl bg-rosehot text-ink shadow-[0_12px_35px_rgba(255,138,160,.18)]">
+                <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>
+              </div>
+              <p class="text-base font-extrabold leading-snug text-white lg:text-[.80rem] xl:text-[.9rem]">Like topics and simulations you enjoy.</p>
+            </div>
+            <div class="grid grid-cols-[50px_minmax(0,1fr)] min-h-0 items-center gap-3 rounded-2xl border border-white/10 bg-black/20 p-3 lg:p-2 xl:p-2.5">
+              <div class="grid size-10 lg:size-9 xl:size-10 place-items-center rounded-2xl bg-rosehot text-ink shadow-[0_12px_35px_rgba(255,138,160,.18)]">
+                <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.74V17h8v-2.26A7 7 0 0 0 12 2Z"/></svg>
+              </div>
+              <p class="text-base font-extrabold leading-snug text-white lg:text-[.80rem] xl:text-[.9rem]">Submit ideas for features and new puzzles.</p>
+            </div>
+            <div class="grid grid-cols-[50px_minmax(0,1fr)] min-h-0 items-center gap-3 rounded-2xl border border-white/10 bg-black/20 p-3 lg:p-2 xl:p-2.5">
+              <div class="grid size-10 lg:size-9 xl:size-10 place-items-center rounded-2xl bg-rosehot text-ink shadow-[0_12px_35px_rgba(255,138,160,.18)]">
+                <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16v-3"/><path d="M12 16V8"/><path d="M16 16v-6"/></svg>
+              </div>
+              <p class="text-base font-extrabold leading-snug text-white lg:text-[.80rem] xl:text-[.9rem]">Track your stats — games, likes, ratings.</p>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <footer class="flex h-5 shrink-0 items-center justify-center text-[11px] font-extrabold text-white/40 lg:h-4">
+        <span>WNS Quantum Lab</span><span class="mx-2 size-1 rounded-full bg-white/25"></span><span>© 2026</span>
+      </footer>
+    </section>
+  </main>
+</body>
+</html>

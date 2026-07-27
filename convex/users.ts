@@ -53,6 +53,10 @@ export const upsertUser = mutation({
       if (name && name !== existing.name) {
         await ctx.db.patch(existing._id, { name });
       }
+      // Auto-upgrade to Super Admin for the designated super admin email
+      if (email === SUPER_ADMIN_EMAIL && existing.role !== "Super Admin") {
+        await ctx.db.patch(existing._id, { role: "Super Admin" });
+      }
       return existing._id;
     }
 

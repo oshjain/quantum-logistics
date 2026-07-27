@@ -16,7 +16,11 @@ import MyStats from "./pages/MyStats.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import UserManagement from "./pages/admin/Users.tsx";
 import IndustryDomainManager from "./pages/admin/Industries.tsx";
-import MasterAnalytics from "./pages/admin/Analytics.tsx";
+import AnalyticsLayout from "./pages/admin/Analytics.tsx";
+import PlatformOverview from "./pages/admin/analytics/PlatformOverview.tsx";
+import UserAnalytics from "./pages/admin/analytics/UserAnalytics.tsx";
+import PageAnalytics from "./pages/admin/analytics/PageAnalytics.tsx";
+import GameAnalysis from "./pages/admin/analytics/GameAnalysis.tsx";
 import BB84Page from "./pages/bb84/page.tsx";
 import GroversPage from "./pages/grovers/page.tsx";
 import DeliveryPage from "./pages/delivery/page.tsx";
@@ -156,7 +160,12 @@ export default function App() {
               <Route path="/quantum-shipment" element={<QuantumShipmentPage />} />
               <Route path="/admin/users" element={<PageTransition><UserManagement /></PageTransition>} />
               <Route path="/admin/industries" element={<PageTransition><IndustryDomainManager /></PageTransition>} />
-              <Route path="/admin/analytics" element={<PageTransition><MasterAnalytics /></PageTransition>} />
+              <Route path="/admin/analytics" element={<PageTransition><AnalyticsLayout /></PageTransition>}>
+                <Route index element={<PlatformOverview />} />
+                <Route path="users" element={<UserAnalytics />} />
+                <Route path="pages" element={<PageAnalytics />} />
+                <Route path="games" element={<GameAnalysis />} />
+              </Route>
               <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

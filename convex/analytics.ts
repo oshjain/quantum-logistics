@@ -230,3 +230,317 @@ export const getRatingAnalytics = query({
     };
   },
 });
+
+/* ─── User Analytics ──────────────────────────────────────────── */
+
+export const getUserAnalytics = query({
+  args: {
+    adminEmail: v.string(),
+    userEmail: v.optional(v.string()),
+    startDate: v.optional(v.number()),
+    endDate: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    await assertAdmin(ctx, args.adminEmail);
+
+    // Get all users
+    let users = await ctx.db.query("users").collect();
+    if (args.userEmail) {
+      users = users.filter((u) => u.email === args.userEmail);
+    }
+
+    // Gather per-user data
+    const userData = await Promise.all(
+      users.map(async (u) => {
+        const [visits, likes, ideas, ratings] = await Promise.all([
+          ctx.db
+            .query("pageVisits")
+            .withIndex("by_email", (q) => q.eq("email", u.email))
+            .collect(),
+          ctx.db
+            .query("likes")
+            .withIndex("by_user", (q) => q.eq("email", u.email))
+            .collect(),
+          ctx.db
+            .query("ideas")
+            .withIndex("by_email", (q) => q.eq("email", u.email))
+            .collect(),
+          ctx.db
+            .query("ratings")
+            .withIndex("by_email", (q) => q.eq("email", u.email))
+            .collect(),
+        ]);
+
+        // Filter by date range
+        let filtVisits = visits;
+        let filtLikes = likes;
+        let filtIdeas = ideas;
+        let filtRatings = ratings;
+        if (args.startDate) {
+          filtVisits = visits.filter((v) => v.visitedAt >= args.startDate!);
+          filtLikes = likes.filter((l) => l.createdAt >= args.startDate!);
+          filtIdeas = ideas.filter((i) => i.createdAt >= args.startDate!);
+          filtRatings = ratings.filter((r) => r.createdAt >= args.startDate!);
+        }
+        if (args.endDate) {
+          filtVisits = filtVisits.filter((v) => v.visitedAt <= args.endDate!);
+          filtLikes = filtLikes.filter((l) => l.createdAt <= args.endDate!);
+          filtIdeas = filtIdeas.filter((i) => i.createdAt <= args.endDate!);
+          filtRatings = filtRatings.filter((r) => r.createdAt <= args.endDate!);
+        }
+
+        // Visits by day
+        const visitsByDay: Record<string, number> = {};
+        for (const v of filtVisits) {
+          const day = new Date(v.visitedAt).toISOString().slice(0, 10);
+          visitsByDay[day] = (visitsByDay[day] || 0) + 1;
+        }
+
+        // Pages visited
+        const pageSet = new Set(filtVisits.map((v) => v.page));
+        const pagesWithCount: Record<string, number> = {};
+        for (const v of filtVisits) {
+          pagesWithCount[v.page] = (pagesWithCount[v.page] || 0) + 1;
+        }
+
+        return {
+          userId: u._id,
+          email: u.email,
+          name: u.name ?? u.email,
+          role: u.role,
+          createdAt: u.createdAt,
+          totalVisits: filtVisits.length,
+          uniquePages: pageSet.size,
+          totalLikes: filtLikes.filter((l) => l.action === "like").length,
+          totalDislikes: filtLikes.filter((l) => l.action === "dislike").length,
+          totalIdeas: filtIdeas.length,
+          rating: filtRatings.length > 0 ? filtRatings[0].rating : null,
+          lastActive: filtVisits.length > 0
+            ? Math.max(...filtVisits.map((v) => v.visitedAt))
+            : u.createdAt,
+          visitsByDay: Object.entries(visitsByDay)
+            .map(([date, count]) => ({ date, count }))
+            .sort((a, b) => a.date.localeCompare(b.date)),
+          topPages: Object.entries(pagesWithCount)
+            .map(([page, count]) => ({ page, count }))
+            .sort((a, b) => b.count - a.count)
+            .slice(0, 10),
+          rawVisits: filtVisits.slice(0, 100).map((v) => ({
+            page: v.page,
+            pageTitle: v.pageTitle ?? v.page,
+            visitedAt: v.visitedAt,
+          })),
+        };
+      }),
+    );
+
+    // Aggregate trends
+    const allVisits = (await ctx.db.query("pageVisits").collect()).filter(
+      (v) => !args.startDate || v.visitedAt >= args.startDate!,
+    );
+    const visitsByDay: Record<string, number> = {};
+    for (const v of allVisits) {
+      const day = new Date(v.visitedAt).toISOString().slice(0, 10);
+      visitsByDay[day] = (visitsByDay[day] || 0) + 1;
+    }
+
+    return {
+      users: userData.sort((a, b) => b.totalVisits - a.totalVisits),
+      totalUsers: users.length,
+      activeUsers: userData.filter((u) => u.totalVisits > 0).length,
+      totalVisits: userData.reduce((s, u) => s + u.totalVisits, 0),
+      totalLikes: userData.reduce((s, u) => s + u.totalLikes, 0),
+      totalIdeas: userData.reduce((s, u) => s + u.totalIdeas, 0),
+      avgRating: userData.filter((u) => u.rating !== null).reduce((s, u, _, arr) => s + (u.rating ?? 0) / arr.length, 0),
+      visitsTrend: Object.entries(visitsByDay)
+        .map(([date, count]) => ({ date, count }))
+        .sort((a, b) => a.date.localeCompare(b.date)),
+    };
+  },
+});
+
+/* ─── Page Analytics ──────────────────────────────────────────── */
+
+export const getPageAnalytics = query({
+  args: {
+    adminEmail: v.string(),
+    pagePath: v.optional(v.string()),
+    startDate: v.optional(v.number()),
+    endDate: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    await assertAdmin(ctx, args.adminEmail);
+
+    let allVisits = await ctx.db.query("pageVisits").collect();
+    if (args.startDate) allVisits = allVisits.filter((v) => v.visitedAt >= args.startDate!);
+    if (args.endDate) allVisits = allVisits.filter((v) => v.visitedAt <= args.endDate!);
+    if (args.pagePath) allVisits = allVisits.filter((v) => v.page === args.pagePath);
+
+    // Aggregate by page
+    const pageMap = new Map<string, {
+      count: number;
+      title: string;
+      uniqueUsers: Set<string>;
+      visitsByDay: Record<string, number>;
+      lastVisit: number;
+      firstVisit: number;
+    }>();
+
+    for (const v of allVisits) {
+      const existing = pageMap.get(v.page) ?? {
+        count: 0,
+        title: v.pageTitle ?? v.page,
+        uniqueUsers: new Set<string>(),
+        visitsByDay: {},
+        lastVisit: 0,
+        firstVisit: Infinity,
+      };
+      existing.count++;
+      existing.uniqueUsers.add(v.email);
+      const day = new Date(v.visitedAt).toISOString().slice(0, 10);
+      existing.visitsByDay[day] = (existing.visitsByDay[day] || 0) + 1;
+      existing.lastVisit = Math.max(existing.lastVisit, v.visitedAt);
+      existing.firstVisit = Math.min(existing.firstVisit, v.visitedAt);
+      pageMap.set(v.page, existing);
+    }
+
+    const pages = Array.from(pageMap.entries()).map(([page, data]) => ({
+      page,
+      title: data.title,
+      count: data.count,
+      uniqueUsers: data.uniqueUsers.size,
+      visitsByDay: Object.entries(data.visitsByDay)
+        .map(([date, count]) => ({ date, count }))
+        .sort((a, b) => a.date.localeCompare(b.date)),
+      lastVisit: data.lastVisit,
+      firstVisit: data.firstVisit === Infinity ? 0 : data.firstVisit,
+    })).sort((a, b) => b.count - a.count);
+
+    // Overall trend
+    const trendMap: Record<string, number> = {};
+    for (const v of allVisits) {
+      const day = new Date(v.visitedAt).toISOString().slice(0, 10);
+      trendMap[day] = (trendMap[day] || 0) + 1;
+    }
+
+    return {
+      pages,
+      totalPages: pages.length,
+      totalVisits: allVisits.length,
+      uniqueUsers: new Set(allVisits.map((v) => v.email)).size,
+      trend: Object.entries(trendMap)
+        .map(([date, count]) => ({ date, count }))
+        .sort((a, b) => a.date.localeCompare(b.date)),
+    };
+  },
+});
+
+/* ─── Game Analysis ───────────────────────────────────────────── */
+
+const GAME_PATHS = new Set([
+  "/bb84", "/grovers", "/delivery", "/dock",
+  "/container-stack", "/vessel-stowage", "/empty-container", "/berth-race",
+  "/trip-chain", "/cross-dock", "/intermodal", "/spot-bid",
+  "/uld-loading", "/flight-capacity", "/quantum-shipment",
+]);
+
+export const getGameAnalytics = query({
+  args: {
+    adminEmail: v.string(),
+    gamePath: v.optional(v.string()),
+    startDate: v.optional(v.number()),
+    endDate: v.optional(v.number()),
+  },
+  handler: async (ctx, args) => {
+    await assertAdmin(ctx, args.adminEmail);
+
+    let allVisits = await ctx.db.query("pageVisits").collect();
+    // Filter to only game pages
+    allVisits = allVisits.filter((v) => GAME_PATHS.has(v.page));
+
+    if (args.startDate) allVisits = allVisits.filter((v) => v.visitedAt >= args.startDate!);
+    if (args.endDate) allVisits = allVisits.filter((v) => v.visitedAt <= args.endDate!);
+    if (args.gamePath) allVisits = allVisits.filter((v) => v.page === args.gamePath);
+
+    // Get all likes
+    const allLikes = await ctx.db.query("likes").collect();
+    const gameLikes = allLikes.filter((l) => l.targetType === "game");
+
+    // Aggregate per game
+    const gameMap = new Map<string, {
+      path: string;
+      title: string;
+      visitCount: number;
+      uniqueUsers: Set<string>;
+      visitsByDay: Record<string, number>;
+      likes: number;
+      dislikes: number;
+      firstVisit: number;
+      lastVisit: number;
+    }>();
+
+    for (const v of allVisits) {
+      const existing = gameMap.get(v.page) ?? {
+        path: v.page,
+        title: v.pageTitle ?? v.page,
+        visitCount: 0,
+        uniqueUsers: new Set<string>(),
+        visitsByDay: {},
+        likes: 0,
+        dislikes: 0,
+        firstVisit: Infinity,
+        lastVisit: 0,
+      };
+      existing.visitCount++;
+      existing.uniqueUsers.add(v.email);
+      const day = new Date(v.visitedAt).toISOString().slice(0, 10);
+      existing.visitsByDay[day] = (existing.visitsByDay[day] || 0) + 1;
+      existing.lastVisit = Math.max(existing.lastVisit, v.visitedAt);
+      existing.firstVisit = Math.min(existing.firstVisit, v.visitedAt);
+      gameMap.set(v.page, existing);
+    }
+
+    // Add like counts
+    for (const [path, data] of gameMap) {
+      const targetLikes = gameLikes.filter((l) => l.targetId === path);
+      data.likes = targetLikes.filter((l) => l.action === "like").length;
+      data.dislikes = targetLikes.filter((l) => l.action === "dislike").length;
+    }
+
+    const games = Array.from(gameMap.entries()).map(([path, data]) => ({
+      path,
+      title: data.title,
+      visitCount: data.visitCount,
+      uniqueUsers: data.uniqueUsers.size,
+      likes: data.likes,
+      dislikes: data.dislikes,
+      engagement: data.uniqueUsers.size > 0
+        ? Math.round((data.visitCount / data.uniqueUsers.size) * 100) / 100
+        : 0,
+      visitsByDay: Object.entries(data.visitsByDay)
+        .map(([date, count]) => ({ date, count }))
+        .sort((a, b) => a.date.localeCompare(b.date)),
+      lastVisit: data.lastVisit,
+      firstVisit: data.firstVisit === Infinity ? 0 : data.firstVisit,
+    })).sort((a, b) => b.visitCount - a.visitCount);
+
+    // Overall trend
+    const trendMap: Record<string, number> = {};
+    for (const v of allVisits) {
+      const day = new Date(v.visitedAt).toISOString().slice(0, 10);
+      trendMap[day] = (trendMap[day] || 0) + 1;
+    }
+
+    return {
+      games,
+      totalGames: games.length,
+      totalVisits: allVisits.length,
+      totalLikes: games.reduce((s, g) => s + g.likes, 0),
+      totalDislikes: games.reduce((s, g) => s + g.dislikes, 0),
+      uniqueUsers: new Set(allVisits.map((v) => v.email)).size,
+      trend: Object.entries(trendMap)
+        .map(([date, count]) => ({ date, count }))
+        .sort((a, b) => a.date.localeCompare(b.date)),
+    };
+  },
+});
