@@ -68,7 +68,7 @@ export default function Index() {
             delay={0.2}
             stagger={0.04}
           >
-            The Future of Logistics is Quantum
+            The Future of Logistics is <span className="text-gradient">Quantum</span>
           </RevealText>
 
           <FadeInView delay={0.6} direction="none">

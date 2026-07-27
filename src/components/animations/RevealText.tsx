@@ -1,7 +1,8 @@
+import React from "react";
 import { motion } from "motion/react";
 
 interface RevealTextProps {
-  children: string;
+  children: React.ReactNode;
   as?: "h1" | "h2" | "h3" | "p" | "span";
   className?: string;
   delay?: number;
@@ -15,28 +16,45 @@ export function RevealText({
   delay = 0,
   stagger = 0.03,
 }: RevealTextProps) {
-  const words = children.split(" ");
+  // If children is a plain string, animate word by word
+  if (typeof children === "string") {
+    const words = children.split(" ");
+    return (
+      <Tag className={className} style={{ overflow: "hidden" }}>
+        {words.map((word, i) => (
+          <span key={i} className="inline-block" style={{ overflow: "hidden", verticalAlign: "top" }}>
+            <motion.span
+              className="inline-block"
+              initial={{ y: "100%", opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{
+                duration: 0.5,
+                delay: delay + i * stagger,
+                ease: [0.25, 0.1, 0.25, 1],
+              }}
+            >
+              {word}
+              {i < words.length - 1 ? "\u00A0" : ""}
+            </motion.span>
+          </span>
+        ))}
+      </Tag>
+    );
+  }
 
+  // For JSX children (e.g. with <span> inside), render directly with fade-in
   return (
     <Tag className={className} style={{ overflow: "hidden" }}>
-      {words.map((word, i) => (
-        <span key={i} className="inline-block" style={{ overflow: "hidden", verticalAlign: "top" }}>
-          <motion.span
-            className="inline-block"
-            initial={{ y: "100%", opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true, margin: "-60px" }}
-            transition={{
-              duration: 0.5,
-              delay: delay + i * stagger,
-              ease: [0.25, 0.1, 0.25, 1],
-            }}
-          >
-            {word}
-            {i < words.length - 1 ? "\u00A0" : ""}
-          </motion.span>
-        </span>
-      ))}
+      <motion.span
+        className="inline-block"
+        initial={{ y: "100%", opacity: 0 }}
+        whileInView={{ y: 0, opacity: 1 }}
+        viewport={{ once: true, margin: "-60px" }}
+        transition={{ duration: 0.5, delay, ease: [0.25, 0.1, 0.25, 1] }}
+      >
+        {children}
+      </motion.span>
     </Tag>
   );
 }
