@@ -63,6 +63,12 @@ export default function PlatformOverview() {
     endDate: now,
   });
 
+  // Shorthand for cleaner template access
+  const o = overview;
+  const v = visitAnalytics;
+  const u = userGrowth;
+  const r = ratingAnalytics;
+
   return (
     <div>
       {/* ═══════ HERO ═══════ */}
@@ -377,7 +383,7 @@ export default function PlatformOverview() {
                         <YAxis hide />
                         <Tooltip
                           contentStyle={{ background: "oklch(0.1 0.025 260)", border: "1px solid oklch(0.22 0.03 260)", borderRadius: "8px", fontSize: "12px" }}
-                          formatter={(value: number, _: string, props: any) => [`${value} (${props.payload.pct}%)`, `Rating ${props.payload.rating}`]}
+                          formatter={(value, _name, props: any) => [`${value} (${props.payload.pct}%)`, `Rating ${props.payload.rating}`]}
                         />
                         <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                           {r.distribution.map((_, i) => (

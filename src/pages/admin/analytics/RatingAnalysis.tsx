@@ -181,7 +181,7 @@ export default function RatingAnalysis() {
                           <YAxis hide />
                           <Tooltip
                             contentStyle={{ background: "oklch(0.1 0.025 260)", border: "1px solid oklch(0.22 0.03 260)", borderRadius: "8px", fontSize: "12px" }}
-                            formatter={(value: number, _: string, props: any) => [`${value} ratings (${props.payload.pct}%)`]}
+                            formatter={(value, _name, props: any) => [`${value} ratings (${props.payload.pct}%)`]}
                           />
                           <Bar dataKey="count" radius={[6, 6, 0, 0]}>
                             {r.distribution.map((entry, i) => (
@@ -346,7 +346,7 @@ export default function RatingAnalysis() {
                         <YAxis type="category" dataKey="role" tick={{ fontSize: 11, fill: "#64748b" }} axisLine={false} tickLine={false} width={100} />
                         <Tooltip
                           contentStyle={{ background: "oklch(0.1 0.025 260)", border: "1px solid oklch(0.22 0.03 260)", borderRadius: "8px", fontSize: "12px" }}
-                          formatter={(value: number, _: string, props: any) => [`${value} (${props.payload.pct}%)`]}
+                          formatter={(value, _name, props: any) => [`${value} (${props.payload.pct}%)`]}
                         />
                         <Bar dataKey="count" radius={[0, 4, 4, 0]}>
                           {r.byRole.map((_, i) => (
