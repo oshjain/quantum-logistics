@@ -111,7 +111,7 @@ export default function UserManagement() {
     <div className="min-h-screen flex flex-col">
       <NavBar />
 
-      <section className="relative px-4 pt-16 pb-10 overflow-hidden">
+      <section className="relative px-4 pt-8 pb-6 overflow-hidden">
         <div className="absolute inset-0 grid-bg opacity-30" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[500px] h-[300px] rounded-full blur-[120px] opacity-10 pointer-events-none"
           style={{ background: "radial-gradient(ellipse, oklch(0.6 0.25 280), transparent 70%)" }} />
@@ -221,7 +221,7 @@ export default function UserManagement() {
           </AnimatePresence>
 
           {/* User list */}
-          <div className="space-y-2">
+          <div className="space-y-2 max-h-[calc(100vh-300px)] overflow-y-auto pr-1">
             {filtered?.length === 0 && (
               <div className="text-center py-12">
                 <UserCog className="size-10 text-muted-foreground/30 mx-auto mb-3" />

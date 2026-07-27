@@ -13,6 +13,7 @@ import {
   Lightbulb, Star, Calendar, Activity, TrendingUp, Clock,
   MapPin, MousePointerClick, Award, Download, UserCircle,
   ArrowLeft, ExternalLink, MessageSquare, ThumbsUp, ThumbsDown,
+  Percent, BarChart3,
 } from "lucide-react";
 
 const GAME_PATHS = new Set([
@@ -135,7 +136,7 @@ export default function UserAnalytics() {
   return (
     <div>
       {/* ═══════ HERO ═══════ */}
-      <section className="relative px-4 pt-16 pb-8 overflow-hidden">
+      <section className="relative px-4 pt-8 pb-6 overflow-hidden">
         <div className="absolute inset-0 grid-bg opacity-30" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[350px] rounded-full blur-[150px] opacity-10 pointer-events-none"
           style={{ background: "radial-gradient(ellipse, oklch(0.6 0.25 280), transparent 70%)" }} />
@@ -389,6 +390,34 @@ export default function UserAnalytics() {
                     <p className="text-[9px] font-mono text-muted-foreground/50">platform rating</p>
                   </div>
                 </div>
+                {/* Ratio row */}
+                <div className="mt-4 grid grid-cols-3 sm:grid-cols-5 gap-3">
+                  <div className="text-center p-2.5 rounded-lg bg-muted/15">
+                    <p className="text-sm font-bold font-mono text-purple-400">{selectedUserData.engagementScore ?? 0}</p>
+                    <p className="text-[8px] font-mono text-muted-foreground">Engagement Score</p>
+                    <p className="text-[7px] text-muted-foreground/50">visits/day</p>
+                  </div>
+                  <div className="text-center p-2.5 rounded-lg bg-muted/15">
+                    <p className="text-sm font-bold font-mono text-rose-400">{selectedUserData.likeRate ?? 0}%</p>
+                    <p className="text-[8px] font-mono text-muted-foreground">Like Rate</p>
+                    <p className="text-[7px] text-muted-foreground/50">likes/visit</p>
+                  </div>
+                  <div className="text-center p-2.5 rounded-lg bg-muted/15">
+                    <p className="text-sm font-bold font-mono text-cyan-400">{selectedUserData.visitFrequency ?? 0}</p>
+                    <p className="text-[8px] font-mono text-muted-foreground">Visit Freq</p>
+                    <p className="text-[7px] text-muted-foreground/50">visits/page</p>
+                  </div>
+                  <div className="text-center p-2.5 rounded-lg bg-muted/15">
+                    <p className="text-sm font-bold font-mono text-emerald-400">{selectedUserData.activityDays ?? 0}</p>
+                    <p className="text-[8px] font-mono text-muted-foreground">Active Days</p>
+                    <p className="text-[7px] text-muted-foreground/50">unique days</p>
+                  </div>
+                  <div className="text-center p-2.5 rounded-lg bg-muted/15">
+                    <p className="text-sm font-bold font-mono text-amber-400">{selectedUserData.gameVisits ?? 0}</p>
+                    <p className="text-[8px] font-mono text-muted-foreground">Game Visits</p>
+                    <p className="text-[7px] text-muted-foreground/50">of {selectedUserData.totalVisits}</p>
+                  </div>
+                </div>
               </div>
             </FadeInView>
           </div>
@@ -399,36 +428,46 @@ export default function UserAnalytics() {
           <>
             {/* Summary Cards */}
             <FadeInView direction="up">
-              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
-                <div className="rounded-xl border border-border/40 bg-card/50 p-4 text-center">
-                  <Users className="size-4 mx-auto mb-1 text-primary" />
-                  <p className="text-xl font-bold font-mono"><AnimatedCounter to={userAnalytics?.totalUsers ?? 0} duration={1} /></p>
-                  <p className="text-[10px] font-mono text-muted-foreground">Total Users</p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
+                <div className="rounded-xl border border-border/40 bg-card/50 p-3 text-center">
+                  <Users className="size-3.5 mx-auto mb-1 text-primary" />
+                  <p className="text-base font-bold font-mono"><AnimatedCounter to={userAnalytics?.totalUsers ?? 0} duration={1} /></p>
+                  <p className="text-[9px] font-mono text-muted-foreground">Total Users</p>
                 </div>
-                <div className="rounded-xl border border-border/40 bg-card/50 p-4 text-center">
-                  <Activity className="size-4 mx-auto mb-1 text-cyan-400" />
-                  <p className="text-xl font-bold font-mono text-cyan-400"><AnimatedCounter to={userAnalytics?.activeUsers ?? 0} duration={1} /></p>
-                  <p className="text-[10px] font-mono text-muted-foreground">Active Users</p>
+                <div className="rounded-xl border border-border/40 bg-card/50 p-3 text-center">
+                  <Activity className="size-3.5 mx-auto mb-1 text-cyan-400" />
+                  <p className="text-base font-bold font-mono text-cyan-400">{userAnalytics?.engagementRate ?? 0}%</p>
+                  <p className="text-[9px] font-mono text-muted-foreground">Engagement</p>
                 </div>
-                <div className="rounded-xl border border-border/40 bg-card/50 p-4 text-center">
-                  <Eye className="size-4 mx-auto mb-1 text-emerald-400" />
-                  <p className="text-xl font-bold font-mono text-emerald-400"><AnimatedCounter to={userAnalytics?.totalVisits ?? 0} duration={1} /></p>
-                  <p className="text-[10px] font-mono text-muted-foreground">Total Visits</p>
+                <div className="rounded-xl border border-border/40 bg-card/50 p-3 text-center">
+                  <Eye className="size-3.5 mx-auto mb-1 text-emerald-400" />
+                  <p className="text-base font-bold font-mono text-emerald-400"><AnimatedCounter to={userAnalytics?.totalVisits ?? 0} duration={1} /></p>
+                  <p className="text-[9px] font-mono text-muted-foreground">Visits</p>
                 </div>
-                <div className="rounded-xl border border-border/40 bg-card/50 p-4 text-center">
-                  <Heart className="size-4 mx-auto mb-1 text-rose-400" />
-                  <p className="text-xl font-bold font-mono text-rose-400"><AnimatedCounter to={userAnalytics?.totalLikes ?? 0} duration={1} /></p>
-                  <p className="text-[10px] font-mono text-muted-foreground">Total Likes</p>
+                <div className="rounded-xl border border-border/40 bg-card/50 p-3 text-center">
+                  <BarChart3 className="size-3.5 mx-auto mb-1 text-purple-400" />
+                  <p className="text-base font-bold font-mono text-purple-400">{userAnalytics?.avgVisitsPerUser ?? 0}</p>
+                  <p className="text-[9px] font-mono text-muted-foreground">Visits/User</p>
                 </div>
-                <div className="rounded-xl border border-border/40 bg-card/50 p-4 text-center">
-                  <Lightbulb className="size-4 mx-auto mb-1 text-amber-400" />
-                  <p className="text-xl font-bold font-mono text-amber-400"><AnimatedCounter to={userAnalytics?.totalIdeas ?? 0} duration={1} /></p>
-                  <p className="text-[10px] font-mono text-muted-foreground">Total Ideas</p>
+                <div className="rounded-xl border border-border/40 bg-card/50 p-3 text-center">
+                  <Heart className="size-3.5 mx-auto mb-1 text-rose-400" />
+                  <p className="text-base font-bold font-mono text-rose-400"><AnimatedCounter to={userAnalytics?.totalLikes ?? 0} duration={1} /></p>
+                  <p className="text-[9px] font-mono text-muted-foreground">Likes</p>
                 </div>
-                <div className="rounded-xl border border-border/40 bg-card/50 p-4 text-center">
-                  <Star className="size-4 mx-auto mb-1 text-yellow-400" />
-                  <p className="text-xl font-bold font-mono text-yellow-400">{userAnalytics?.avgRating ? userAnalytics.avgRating.toFixed(1) : "—"}</p>
-                  <p className="text-[10px] font-mono text-muted-foreground">Avg Rating</p>
+                <div className="rounded-xl border border-border/40 bg-card/50 p-3 text-center">
+                  <Percent className="size-3.5 mx-auto mb-1 text-rose-400" />
+                  <p className="text-base font-bold font-mono text-rose-400">{userAnalytics?.likeRate ?? 0}%</p>
+                  <p className="text-[9px] font-mono text-muted-foreground">Like Rate</p>
+                </div>
+                <div className="rounded-xl border border-border/40 bg-card/50 p-3 text-center">
+                  <Lightbulb className="size-3.5 mx-auto mb-1 text-amber-400" />
+                  <p className="text-base font-bold font-mono text-amber-400"><AnimatedCounter to={userAnalytics?.totalIdeas ?? 0} duration={1} /></p>
+                  <p className="text-[9px] font-mono text-muted-foreground">Ideas</p>
+                </div>
+                <div className="rounded-xl border border-border/40 bg-card/50 p-3 text-center">
+                  <Star className="size-3.5 mx-auto mb-1 text-yellow-400" />
+                  <p className="text-base font-bold font-mono text-yellow-400">{userAnalytics?.avgRating ? userAnalytics.avgRating.toFixed(1) : "—"}</p>
+                  <p className="text-[9px] font-mono text-muted-foreground">Avg Rating</p>
                 </div>
               </div>
             </FadeInView>
@@ -524,17 +563,17 @@ export default function UserAnalytics() {
             {/* Users List */}
             <FadeInView direction="up">
               <div className="rounded-2xl border border-border/40 bg-card/50 overflow-hidden">
-                <div className="overflow-x-auto">
+                <div className="max-h-[calc(100vh-380px)] overflow-y-auto">
                   <table className="w-full text-sm">
-                    <thead>
+                    <thead className="sticky top-0 bg-card/95 backdrop-blur-sm z-10">
                       <tr className="border-b border-border/30">
                         <th className="text-left px-4 py-3 text-[10px] font-mono text-muted-foreground uppercase tracking-wider">User</th>
-                        <th className="text-center px-3 py-3 text-[10px] font-mono text-muted-foreground uppercase tracking-wider">Visits</th>
-                        <th className="text-center px-3 py-3 text-[10px] font-mono text-muted-foreground uppercase tracking-wider">Pages</th>
-                        <th className="text-center px-3 py-3 text-[10px] font-mono text-muted-foreground uppercase tracking-wider">Likes</th>
-                        <th className="text-center px-3 py-3 text-[10px] font-mono text-muted-foreground uppercase tracking-wider">Ideas</th>
-                        <th className="text-center px-3 py-3 text-[10px] font-mono text-muted-foreground uppercase tracking-wider">Rating</th>
-                        <th className="text-center px-3 py-3 text-[10px] font-mono text-muted-foreground uppercase tracking-wider">Last Active</th>
+                        <th className="text-center px-2 py-3 text-[10px] font-mono text-muted-foreground uppercase tracking-wider">Visits</th>
+                        <th className="text-center px-2 py-3 text-[10px] font-mono text-muted-foreground uppercase tracking-wider">Eng. Score</th>
+                        <th className="text-center px-2 py-3 text-[10px] font-mono text-muted-foreground uppercase tracking-wider">Like Rate</th>
+                        <th className="text-center px-2 py-3 text-[10px] font-mono text-muted-foreground uppercase tracking-wider">Ideas</th>
+                        <th className="text-center px-2 py-3 text-[10px] font-mono text-muted-foreground uppercase tracking-wider">Rating</th>
+                        <th className="text-center px-2 py-3 text-[10px] font-mono text-muted-foreground uppercase tracking-wider">Active</th>
                         <th className="text-right px-4 py-3 text-[10px] font-mono text-muted-foreground uppercase tracking-wider">Action</th>
                       </tr>
                     </thead>
@@ -552,29 +591,29 @@ export default function UserAnalytics() {
                                   {u.name[0].toUpperCase()}
                                 </div>
                                 <div className="min-w-0">
-                                  <p className="text-xs font-medium truncate max-w-[180px]">{u.name}</p>
-                                  <p className="text-[10px] font-mono text-muted-foreground truncate max-w-[180px]">{u.email}</p>
+                                  <p className="text-xs font-medium truncate max-w-[140px]">{u.name}</p>
+                                  <p className="text-[10px] font-mono text-muted-foreground truncate max-w-[140px]">{u.email}</p>
                                 </div>
                               </div>
                             </td>
-                            <td className="px-3 py-3 text-center">
+                            <td className="px-2 py-3 text-center">
                               <span className="text-xs font-mono font-bold text-cyan-400">{u.totalVisits}</span>
                             </td>
-                            <td className="px-3 py-3 text-center">
-                              <span className="text-xs font-mono text-muted-foreground">{u.uniquePages}</span>
+                            <td className="px-2 py-3 text-center">
+                              <span className="text-xs font-mono text-purple-400">{u.engagementScore ?? 0}</span>
                             </td>
-                            <td className="px-3 py-3 text-center">
-                              <span className="text-xs font-mono font-bold text-rose-400">{u.totalLikes}</span>
+                            <td className="px-2 py-3 text-center">
+                              <span className="text-xs font-mono text-rose-400">{u.likeRate ?? 0}%</span>
                             </td>
-                            <td className="px-3 py-3 text-center">
+                            <td className="px-2 py-3 text-center">
                               <span className="text-xs font-mono font-bold text-amber-400">{u.totalIdeas}</span>
                             </td>
-                            <td className="px-3 py-3 text-center">
+                            <td className="px-2 py-3 text-center">
                               <span className={`text-xs font-mono font-bold ${u.rating ? "text-yellow-400" : "text-muted-foreground/50"}`}>
                                 {u.rating ?? "—"}
                               </span>
                             </td>
-                            <td className="px-3 py-3 text-center">
+                            <td className="px-2 py-3 text-center">
                               <span className="text-[10px] font-mono text-muted-foreground" title={formatDate(u.lastActive)}>
                                 {timeAgo(u.lastActive)}
                               </span>

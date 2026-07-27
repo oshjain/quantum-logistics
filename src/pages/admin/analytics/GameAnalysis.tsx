@@ -11,7 +11,7 @@ import {
 import {
   Gamepad2, Eye, Heart, ThumbsDown, TrendingUp, Users,
   Activity, Search, ArrowLeft, Star, Trophy, Award,
-  ChevronUp, ChevronDown,
+  ChevronUp, ChevronDown, Percent, BarChart3,
 } from "lucide-react";
 
 const GAME_CATEGORIES: Record<string, { name: string; emoji: string }> = {
@@ -70,6 +70,7 @@ export default function GameAnalysis() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<"visits" | "likes" | "engagement" | "users">("visits");
+  const [gameView, setGameView] = useState<"games" | "topics">("games");
 
   const now = useMemo(() => Date.now(), [dateRange]);
   const startDate = useMemo(() =>
@@ -79,6 +80,12 @@ export default function GameAnalysis() {
   const gameAnalytics = useQuery(api.analytics.getGameAnalytics, {
     adminEmail: email ?? "",
     gamePath: selectedGame ?? undefined,
+    startDate,
+    endDate: now,
+  });
+
+  const topicAnalytics = useQuery(api.analytics.getTopicAnalytics, {
+    adminEmail: email ?? "",
     startDate,
     endDate: now,
   });
@@ -149,7 +156,7 @@ export default function GameAnalysis() {
   return (
     <div>
       {/* ═══════ HERO ═══════ */}
-      <section className="relative px-4 pt-16 pb-8 overflow-hidden">
+      <section className="relative px-4 pt-8 pb-6 overflow-hidden">
         <div className="absolute inset-0 grid-bg opacity-30" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[350px] rounded-full blur-[150px] opacity-10 pointer-events-none"
           style={{ background: "radial-gradient(ellipse, oklch(0.8 0.2 150), transparent 70%)" }} />
@@ -327,40 +334,46 @@ export default function GameAnalysis() {
           <>
             {/* Summary Cards */}
             <FadeInView direction="up">
-              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
-                <div className="rounded-xl border border-border/40 bg-card/50 p-4 text-center">
-                  <Gamepad2 className="size-4 mx-auto mb-1 text-primary" />
-                  <p className="text-xl font-bold font-mono"><AnimatedCounter to={gameAnalytics?.totalGames ?? 0} duration={1} /></p>
-                  <p className="text-[10px] font-mono text-muted-foreground">Total Games</p>
+              <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
+                <div className="rounded-xl border border-border/40 bg-card/50 p-3 text-center">
+                  <Gamepad2 className="size-3.5 mx-auto mb-1 text-primary" />
+                  <p className="text-base font-bold font-mono"><AnimatedCounter to={gameAnalytics?.totalGames ?? 0} duration={1} /></p>
+                  <p className="text-[9px] font-mono text-muted-foreground">Games</p>
                 </div>
-                <div className="rounded-xl border border-border/40 bg-card/50 p-4 text-center">
-                  <Eye className="size-4 mx-auto mb-1 text-cyan-400" />
-                  <p className="text-xl font-bold font-mono text-cyan-400"><AnimatedCounter to={gameAnalytics?.totalVisits ?? 0} duration={1} /></p>
-                  <p className="text-[10px] font-mono text-muted-foreground">Total Visits</p>
+                <div className="rounded-xl border border-border/40 bg-card/50 p-3 text-center">
+                  <Eye className="size-3.5 mx-auto mb-1 text-cyan-400" />
+                  <p className="text-base font-bold font-mono text-cyan-400"><AnimatedCounter to={gameAnalytics?.totalVisits ?? 0} duration={1} /></p>
+                  <p className="text-[9px] font-mono text-muted-foreground">Visits</p>
                 </div>
-                <div className="rounded-xl border border-border/40 bg-card/50 p-4 text-center">
-                  <Users className="size-4 mx-auto mb-1 text-purple-400" />
-                  <p className="text-xl font-bold font-mono text-purple-400"><AnimatedCounter to={gameAnalytics?.uniqueUsers ?? 0} duration={1} /></p>
-                  <p className="text-[10px] font-mono text-muted-foreground">Unique Users</p>
+                <div className="rounded-xl border border-border/40 bg-card/50 p-3 text-center">
+                  <Users className="size-3.5 mx-auto mb-1 text-purple-400" />
+                  <p className="text-base font-bold font-mono text-purple-400"><AnimatedCounter to={gameAnalytics?.uniqueUsers ?? 0} duration={1} /></p>
+                  <p className="text-[9px] font-mono text-muted-foreground">Users</p>
                 </div>
-                <div className="rounded-xl border border-border/40 bg-card/50 p-4 text-center">
-                  <Heart className="size-4 mx-auto mb-1 text-rose-400" />
-                  <p className="text-xl font-bold font-mono text-rose-400"><AnimatedCounter to={gameAnalytics?.totalLikes ?? 0} duration={1} /></p>
-                  <p className="text-[10px] font-mono text-muted-foreground">Total Likes</p>
+                <div className="rounded-xl border border-border/40 bg-card/50 p-3 text-center">
+                  <Activity className="size-3.5 mx-auto mb-1 text-emerald-400" />
+                  <p className="text-base font-bold font-mono text-emerald-400">{gameAnalytics?.overallEngagement ?? "—"}</p>
+                  <p className="text-[9px] font-mono text-muted-foreground">Engagement</p>
                 </div>
-                <div className="rounded-xl border border-border/40 bg-card/50 p-4 text-center">
-                  <ThumbsDown className="size-4 mx-auto mb-1 text-orange-400" />
-                  <p className="text-xl font-bold font-mono text-orange-400"><AnimatedCounter to={gameAnalytics?.totalDislikes ?? 0} duration={1} /></p>
-                  <p className="text-[10px] font-mono text-muted-foreground">Dislikes</p>
+                <div className="rounded-xl border border-border/40 bg-card/50 p-3 text-center">
+                  <Heart className="size-3.5 mx-auto mb-1 text-rose-400" />
+                  <p className="text-base font-bold font-mono text-rose-400"><AnimatedCounter to={gameAnalytics?.totalLikes ?? 0} duration={1} /></p>
+                  <p className="text-[9px] font-mono text-muted-foreground">Likes</p>
                 </div>
-                <div className="rounded-xl border border-border/40 bg-card/50 p-4 text-center">
-                  <Activity className="size-4 mx-auto mb-1 text-emerald-400" />
-                  <p className="text-xl font-bold font-mono text-emerald-400">
-                    {gameAnalytics?.totalGames && gameAnalytics.totalVisits
-                      ? (gameAnalytics.totalVisits / gameAnalytics.totalGames).toFixed(1)
-                      : "—"}
-                  </p>
-                  <p className="text-[10px] font-mono text-muted-foreground">Avg/Game</p>
+                <div className="rounded-xl border border-border/40 bg-card/50 p-3 text-center">
+                  <Percent className="size-3.5 mx-auto mb-1 text-rose-400" />
+                  <p className="text-base font-bold font-mono text-rose-400">{gameAnalytics?.overallLikeRatio ?? 0}%</p>
+                  <p className="text-[9px] font-mono text-muted-foreground">Like Ratio</p>
+                </div>
+                <div className="rounded-xl border border-border/40 bg-card/50 p-3 text-center">
+                  <BarChart3 className="size-3.5 mx-auto mb-1 text-sky-400" />
+                  <p className="text-base font-bold font-mono text-sky-400">{gameAnalytics?.avgVisitsPerGame ?? "—"}</p>
+                  <p className="text-[9px] font-mono text-muted-foreground">Avg/Game</p>
+                </div>
+                <div className="rounded-xl border border-border/40 bg-card/50 p-3 text-center">
+                  <ThumbsDown className="size-3.5 mx-auto mb-1 text-orange-400" />
+                  <p className="text-base font-bold font-mono text-orange-400"><AnimatedCounter to={gameAnalytics?.totalDislikes ?? 0} duration={1} /></p>
+                  <p className="text-[9px] font-mono text-muted-foreground">Dislikes</p>
                 </div>
               </div>
             </FadeInView>
@@ -373,18 +386,28 @@ export default function GameAnalysis() {
                   Category Performance
                 </h2>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-                  {topicStats.map((topic) => (
+                  {(gameAnalytics?.categoryShare ?? topicStats).map((topic: any) => (
                     <motion.div
-                      key={topic.topic}
+                      key={topic.name ?? topic.topic}
                       whileHover={{ y: -2 }}
                       className="rounded-xl border border-border/40 p-4 bg-card/50 text-center hover:border-border/60 transition-all"
                     >
-                      <p className="text-2xl mb-1">{topic.emoji}</p>
-                      <p className="text-xs font-bold truncate">{topic.topic}</p>
-                      <p className="text-lg font-bold font-mono text-cyan-400 mt-1">{topic.visits}</p>
+                      <p className="text-2xl mb-1">{topic.emoji ?? GAME_CATEGORIES[topic.name ?? topic.topic]?.emoji ?? "🎮"}</p>
+                      <p className="text-xs font-bold truncate">{topic.name ?? topic.topic}</p>
+                      <div className="flex items-center justify-center gap-2 mt-1">
+                        <p className="text-lg font-bold font-mono text-cyan-400">{topic.visits}</p>
+                        <span className="text-xs font-mono text-amber-400">{topic.share ?? 0}%</span>
+                      </div>
                       <p className="text-[9px] font-mono text-muted-foreground">
-                        {topic.count} games · {topic.likes} likes · {topic.users} users
+                        {topic.games ?? topic.count} games
                       </p>
+                      {/* Share bar */}
+                      <div className="mt-2 h-1.5 rounded-full bg-muted/20 overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-blue-400"
+                          style={{ width: `${topic.share ?? 0}%` }}
+                        />
+                      </div>
                     </motion.div>
                   ))}
                 </div>
@@ -425,6 +448,24 @@ export default function GameAnalysis() {
               </div>
             </FadeInView>
 
+            {/* View Toggle: Games vs Topics */}
+            <FadeInView direction="up">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="flex gap-1 rounded-lg border border-border/30 p-0.5">
+                  {(["games", "topics"] as const).map((v) => (
+                    <button key={v} onClick={() => { setGameView(v); setSelectedGame(null); }}
+                      className={`px-3 py-1.5 rounded-md text-[10px] font-medium transition-all ${
+                        gameView === v ? "bg-primary/10 text-primary" : "text-muted-foreground hover:text-foreground"
+                      }`}>
+                      {v === "games" ? "🎮 By Game" : "📊 By Topic"}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </FadeInView>
+
+            {gameView === "games" ? (
+            <>
             {/* Filters & Sort */}
             <FadeInView direction="up">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
@@ -540,6 +581,112 @@ export default function GameAnalysis() {
                 )}
               </div>
             </FadeInView>
+            </>
+          ) : (
+            /* ═══════════════════════════════════════════ */
+            /* ─── TOPIC ANALYTICS ─────────────────────── */
+            /* ═══════════════════════════════════════════ */
+            <>
+              {/* Topic Summary Cards */}
+              <FadeInView direction="up">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div className="rounded-xl border border-border/40 bg-card/50 p-4 text-center">
+                    <Trophy className="size-4 mx-auto mb-1 text-primary" />
+                    <p className="text-xl font-bold font-mono"><AnimatedCounter to={topicAnalytics?.totalTopics ?? 0} duration={1} /></p>
+                    <p className="text-[10px] font-mono text-muted-foreground">Topics</p>
+                  </div>
+                  <div className="rounded-xl border border-border/40 bg-card/50 p-4 text-center">
+                    <Eye className="size-4 mx-auto mb-1 text-cyan-400" />
+                    <p className="text-xl font-bold font-mono text-cyan-400"><AnimatedCounter to={topicAnalytics?.totalVisits ?? 0} duration={1} /></p>
+                    <p className="text-[10px] font-mono text-muted-foreground">Game Visits</p>
+                  </div>
+                  <div className="rounded-xl border border-border/40 bg-card/50 p-4 text-center">
+                    <Users className="size-4 mx-auto mb-1 text-purple-400" />
+                    <p className="text-xl font-bold font-mono text-purple-400"><AnimatedCounter to={topicAnalytics?.totalUsers ?? 0} duration={1} /></p>
+                    <p className="text-[10px] font-mono text-muted-foreground">Players</p>
+                  </div>
+                  <div className="rounded-xl border border-border/40 bg-card/50 p-4 text-center">
+                    <Percent className="size-4 mx-auto mb-1 text-amber-400" />
+                    <p className="text-xl font-bold font-mono text-amber-400">{topicAnalytics?.concentration ?? 0}%</p>
+                    <p className="text-[10px] font-mono text-muted-foreground">Top Topic Share</p>
+                  </div>
+                </div>
+              </FadeInView>
+
+              {/* Topic Cards */}
+              <FadeInView direction="up">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {topicAnalytics?.topics.map((topic, i) => (
+                    <motion.div
+                      key={topic.name}
+                      whileHover={{ y: -2 }}
+                      className="rounded-2xl border border-border/40 p-5 bg-card/50 hover:border-border/60 transition-all"
+                    >
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xl">{GAME_CATEGORIES[topic.name]?.emoji ?? "📊"}</span>
+                          <h3 className="text-sm font-bold">{topic.name}</h3>
+                        </div>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 font-medium">
+                          {topic.trafficShare}%
+                        </span>
+                      </div>
+
+                      {/* Metric row */}
+                      <div className="grid grid-cols-4 gap-2 mb-3">
+                        <div className="text-center">
+                          <p className="text-sm font-bold font-mono text-cyan-400">{topic.visits}</p>
+                          <p className="text-[8px] font-mono text-muted-foreground">Visits</p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-sm font-bold font-mono text-purple-400">{topic.uniqueUsers}</p>
+                          <p className="text-[8px] font-mono text-muted-foreground">Users</p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-sm font-bold font-mono text-emerald-400">{topic.engagementRate}</p>
+                          <p className="text-[8px] font-mono text-muted-foreground">Engage</p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-sm font-bold font-mono text-rose-400">{topic.likeRatio}%</p>
+                          <p className="text-[8px] font-mono text-muted-foreground">Like</p>
+                        </div>
+                      </div>
+
+                      {/* Progress bars */}
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[8px] font-mono text-muted-foreground w-12">Traffic</span>
+                          <div className="flex-1 h-1.5 rounded-full bg-muted/20 overflow-hidden">
+                            <div className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-blue-400" style={{ width: `${topic.trafficShare}%` }} />
+                          </div>
+                          <span className="text-[8px] font-mono text-muted-foreground w-8 text-right">{topic.trafficShare}%</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[8px] font-mono text-muted-foreground w-12">Users</span>
+                          <div className="flex-1 h-1.5 rounded-full bg-muted/20 overflow-hidden">
+                            <div className="h-full rounded-full bg-gradient-to-r from-purple-400 to-pink-400" style={{ width: `${topic.userCapture}%` }} />
+                          </div>
+                          <span className="text-[8px] font-mono text-muted-foreground w-8 text-right">{topic.userCapture}%</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[8px] font-mono text-muted-foreground w-12">Likes</span>
+                          <div className="flex-1 h-1.5 rounded-full bg-muted/20 overflow-hidden">
+                            <div className="h-full rounded-full bg-gradient-to-r from-rose-400 to-pink-400" style={{ width: `${topic.likeShare}%` }} />
+                          </div>
+                          <span className="text-[8px] font-mono text-muted-foreground w-8 text-right">{topic.likeShare}%</span>
+                        </div>
+                      </div>
+
+                      <div className="mt-3 flex items-center justify-between text-[9px] font-mono text-muted-foreground/60">
+                        <span>{topic.gameCount} games</span>
+                        <span>{topic.likes} likes</span>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </FadeInView>
+            </>
+          )}
           </>
         )}
       </div>

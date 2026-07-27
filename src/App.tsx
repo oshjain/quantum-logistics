@@ -21,6 +21,7 @@ import PlatformOverview from "./pages/admin/analytics/PlatformOverview.tsx";
 import UserAnalytics from "./pages/admin/analytics/UserAnalytics.tsx";
 import PageAnalytics from "./pages/admin/analytics/PageAnalytics.tsx";
 import GameAnalysis from "./pages/admin/analytics/GameAnalysis.tsx";
+import RatingAnalysis from "./pages/admin/analytics/RatingAnalysis.tsx";
 import BB84Page from "./pages/bb84/page.tsx";
 import GroversPage from "./pages/grovers/page.tsx";
 import DeliveryPage from "./pages/delivery/page.tsx";
@@ -165,6 +166,7 @@ export default function App() {
                 <Route path="users" element={<UserAnalytics />} />
                 <Route path="pages" element={<PageAnalytics />} />
                 <Route path="games" element={<GameAnalysis />} />
+                <Route path="ratings" element={<RatingAnalysis />} />
               </Route>
               <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="*" element={<NotFound />} />

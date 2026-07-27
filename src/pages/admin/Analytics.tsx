@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils.ts";
 import { motion, AnimatePresence } from "motion/react";
 import {
   BarChart3, Users, FileText, Gamepad2, Menu, X,
-  LayoutDashboard, Shield,
+  LayoutDashboard, Shield, Star,
 } from "lucide-react";
 
 const NAV_ITEMS = [
@@ -16,6 +16,7 @@ const NAV_ITEMS = [
   { path: "/admin/analytics/users", label: "User Analytics", icon: <Users className="size-4" />, end: false },
   { path: "/admin/analytics/pages", label: "Page Analytics", icon: <FileText className="size-4" />, end: false },
   { path: "/admin/analytics/games", label: "Game Analysis", icon: <Gamepad2 className="size-4" />, end: false },
+  { path: "/admin/analytics/ratings", label: "Rating Analytics", icon: <Star className="size-4" />, end: false },
 ];
 
 export default function AnalyticsLayout() {
