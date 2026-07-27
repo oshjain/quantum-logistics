@@ -256,7 +256,7 @@ export default function Index() {
               <FadeInView key={cat.title} delay={0.08 * i} direction="up">
                 <Link to="/simulations" className="block group h-full">
                   <div
-                    className="relative rounded-xl border border-border/50 p-5 h-full flex flex-col bg-card transition-all duration-300 hover:scale-[1.03] hover:-translate-y-1"
+                    className="relative rounded-xl border border-border/50 p-5 lg:p-6 h-full flex flex-col bg-card transition-all duration-300 hover:scale-[1.03] hover:-translate-y-1"
                     style={{ borderColor: `${cat.color}30` }}
                   >
                     <div
@@ -264,12 +264,12 @@ export default function Index() {
                       style={{ background: `radial-gradient(ellipse at 80% 0%, ${cat.color}, transparent 60%)` }}
                     />
                     <div className="relative z-10 flex items-center gap-3 mb-3">
-                      <span className="text-3xl">{cat.icon}</span>
-                      <h3 className="font-bold text-base" style={{ color: cat.color }}>{cat.title}</h3>
+                      <span className="text-3xl lg:text-4xl">{cat.icon}</span>
+                      <h3 className="font-bold text-base lg:text-lg" style={{ color: cat.color }}>{cat.title}</h3>
                     </div>
                     <div className="relative z-10 flex flex-wrap gap-1.5 mt-auto">
                       {cat.sims.map((sim) => (
-                        <span key={sim.path} className="text-xs px-2 py-0.5 rounded-md bg-muted/30 text-muted-foreground border border-border/30">
+                        <span key={sim.path} className="text-xs lg:text-sm px-2 py-0.5 rounded-md bg-muted/30 text-muted-foreground border border-border/30">
                           {sim.emoji} {sim.title}
                         </span>
                       ))}
