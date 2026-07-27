@@ -103,8 +103,8 @@ export default function Simulations() {
                 <div>
                   {/* Category header */}
                   <div className="flex items-center gap-3 mb-6">
-                    <span className="text-3xl">{cat.icon}</span>
-                    <h2 className="text-2xl font-bold" style={{ color: cat.color }}>{cat.title}</h2>
+                    <span className="text-3xl lg:text-5xl">{cat.icon}</span>
+                    <h2 className="text-2xl lg:text-3xl font-bold" style={{ color: cat.color }}>{cat.title}</h2>
                     <div className="h-px flex-1 bg-border/30 ml-2" />
                     <span className="text-xs font-mono text-muted-foreground">{cat.sims.length} simulations</span>
                   </div>
@@ -124,7 +124,7 @@ export default function Simulations() {
                             whileHover={{ y: -6, scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                             transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                            className="relative rounded-xl border overflow-hidden p-5 h-full flex flex-col bg-card"
+                            className="relative rounded-xl border overflow-hidden p-5 lg:p-6 h-full flex flex-col bg-card"
                             style={{
                               borderColor: `${cat.color}30`,
                               boxShadow: `0 0 30px ${cat.color}08`,
@@ -143,11 +143,11 @@ export default function Simulations() {
 
                             <div className="relative z-10 flex flex-col h-full">
                               <div className="flex items-start justify-between mb-3">
-                                <span className="text-3xl">{sim.emoji}</span>
+                                <span className="text-3xl lg:text-4xl">{sim.emoji}</span>
                                 <span className="text-[10px] text-muted-foreground font-mono px-2 py-0.5 rounded-full bg-muted/30 border border-border/30">{sim.diff}</span>
                               </div>
 
-                              <h3 className="font-bold text-lg mb-2 group-hover:brightness-110 transition-all" style={{ color: cat.color }}>
+                              <h3 className="font-bold text-lg lg:text-xl mb-2 group-hover:brightness-110 transition-all" style={{ color: cat.color }}>
                                 {sim.title}
                               </h3>
                               <p className="text-sm text-muted-foreground leading-relaxed mb-4 flex-1">{sim.desc}</p>
