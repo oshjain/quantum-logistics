@@ -33,3 +33,4 @@ tsconfig.tsbuildinfo
 # Database snapshots (exported from Convex)
 _tables/
 users/
+*.stackdump
