@@ -79,6 +79,15 @@ A hands-on learning platform that demonstrates quantum computing concepts throug
 - **Routing:** React Router v7
 - **Deployment:** GitHub Pages via GitHub Actions
 
+## Prerequisites
+
+- **Node.js 22+** — [Download](https://nodejs.org/)
+- **pnpm** — Install via npm:
+
+  ```bash
+  npm install -g pnpm
+  ```
+
 ## Getting Started
 
 ### 1. Install dependencies
